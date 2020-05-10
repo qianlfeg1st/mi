@@ -72,6 +72,53 @@ class RoleController extends BaseController {
     this.ctx.body = '角色删除'
 
   }
+
+  async auth () {
+
+    const result = await this.ctx.model.Access.aggregate([
+      {
+        $match: {
+          module_id: '0',
+        }
+      },
+      {
+        $lookup: {
+          from: 'access',
+          localField: '_id',
+          foreignField: 'module_id',
+          as: 'items',
+        },
+      },
+    ])
+
+    await this.ctx.render('/admin/role/auth', {
+      list: result,
+      role_id: this.ctx.query.id,
+    })
+  }
+
+  async doAuth () {
+
+    const { role_id, access_node } = this.ctx.request.body
+
+    //删除当前角色下面的所有权限
+    await this.ctx.model.RoleAccess.deleteMany({
+      role_id,
+    })
+
+    //给role_access增加数据 把获取的权限和角色增加到数据库
+    for (let i = 0; i < access_node.length; i++) {
+
+      const roleAccessData = new this.ctx.model.RoleAccess({
+        role_id,
+        access_id: access_node[i]
+      })
+
+      roleAccessData.save()
+    }
+
+    await this.success(`/admin/role/auth?id=${role_id}`, '授权成功')
+  }
 }
 
 module.exports = RoleController;

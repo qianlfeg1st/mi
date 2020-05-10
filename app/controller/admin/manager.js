@@ -79,6 +79,7 @@ class ManagerController extends BaseController {
 
     await this.success('/admin/manager', '修改用户成功')
   }
+
 }
 
 module.exports = ManagerController;
