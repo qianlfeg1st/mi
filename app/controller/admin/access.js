@@ -58,9 +58,29 @@ class AccessController extends BaseController {
 
   async edit() {
 
+    await this.ctx.render('admin/access/edit', {
+      moduleList: await this.ctx.model.Access.find({
+        module_id: '0',
+      }),
+      list: (await this.ctx.model.Access.find({
+        _id: this.ctx.request.query.id,
+      }))[0]
+    })
+  }
 
-    await this.ctx.render('admin/access/edit');
+  async doEdit () {
 
+    const { module_id, id } = this.ctx.request.body
+
+    const result = await this.ctx.model.Access.updateOne({
+      _id: id,
+    }, {
+      ...this.ctx.request.body,
+      // module_id 0 表示为顶级模块，非顶级模块必须存ObjectId，顶级模块存StringId
+      module_id: module_id === '0' ? module_id : this.app.mongoose.Types.ObjectId(module_id),
+    })
+
+    await this.success('/admin/access', '编辑权限成功')
   }
 }
 
