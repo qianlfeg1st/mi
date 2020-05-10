@@ -18,6 +18,7 @@ module.exports = app => {
   router.get('/admin/manager/add', controller.admin.manager.add);
   router.get('/admin/manager/edit', controller.admin.manager.edit);
   router.post('/admin/manager/doAdd', controller.admin.manager.doAdd);
+  router.post('/admin/manager/doEdit', controller.admin.manager.doEdit);
 
 
   router.get('/admin/role', controller.admin.role.index);
@@ -30,6 +31,7 @@ module.exports = app => {
   router.get('/admin/access', controller.admin.access.index);
   router.get('/admin/access/add', controller.admin.access.add);
   router.get('/admin/access/edit', controller.admin.access.edit);
+  router.post('/admin/access/doAdd', controller.admin.access.doAdd);
 
 
 };

@@ -23,6 +23,8 @@ class LoginController extends BaseController {
       password,
     })
 
+    // console.log('~~~~', result, password)
+
     // 登陆成功
     if (result.length) {
 

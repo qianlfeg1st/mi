@@ -22,16 +22,12 @@ class ManagerController extends BaseController {
 
   async add () {
 
-    const roleResult = await this.ctx.model.Rule.find()
-
     await this.ctx.render('admin/manager/add', {
-      roleResult,
+      roleResult: await this.ctx.model.Rule.find()
     })
   }
 
   async doAdd () {
-
-    console.log('~~~~', this.ctx.request.body)
 
     const body = this.ctx.request.body
 
@@ -56,9 +52,32 @@ class ManagerController extends BaseController {
     }
   }
 
-  async edit() {
+  async edit () {
 
-    await this.ctx.render('admin/manager/edit');
+    const adminResult = await this.ctx.model.Admin.find({
+      _id: this.ctx.query.id,
+    })
+
+    await this.ctx.render('admin/manager/edit', {
+      roleResult: await this.ctx.model.Rule.find(),
+      adminResult: adminResult[0],
+    })
+  }
+
+  async doEdit () {
+
+    const { password, id, mobile, email, role_id } = this.ctx.request.body
+
+    await this.ctx.model.Admin.updateOne({
+      _id: id,
+    }, {
+      mobile,
+      email,
+      role_id,
+      password: password ? await this.service.tools.md5(password) : undefined,
+    })
+
+    await this.success('/admin/manager', '修改用户成功')
   }
 }
 
