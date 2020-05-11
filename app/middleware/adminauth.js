@@ -11,7 +11,15 @@ module.exports = options => {
 
       ctx.state.userinfo = ctx.session.userinfo
 
-      await next()
+      const hasAuth = await ctx.service.admin.checkAuth()
+
+      if (hasAuth) {
+
+        await next()
+      } else {
+
+        ctx.body = '您没有权限访问当前地址'
+      }
     } else {
 
       if (['/admin/login', '/admin/doLogin', '/admin/verify'].includes(pathname)) {
