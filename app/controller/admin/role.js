@@ -75,6 +75,8 @@ class RoleController extends BaseController {
 
   async auth () {
 
+    const role_id = this.ctx.query.id
+
     const result = await this.ctx.model.Access.aggregate([
       {
         $match: {
@@ -91,9 +93,23 @@ class RoleController extends BaseController {
       },
     ])
 
+    const accessResultArray = (await this.ctx.model.RoleAccess.find({
+      role_id,
+    })).map(item => item.access_id.toString())
+
+    for (let i = 0; i < result.length; i++) {
+
+      if (accessResultArray.includes(result[i]._id.toString())) result[i].checked = true
+
+      for (let j = 0; j < result[i].items.length; j++) {
+
+        if (accessResultArray.includes(result[i].items[j]._id.toString())) result[i].items[j].checked = true
+      }
+    }
+
     await this.ctx.render('/admin/role/auth', {
       list: result,
-      role_id: this.ctx.query.id,
+      role_id,
     })
   }
 
@@ -106,15 +122,18 @@ class RoleController extends BaseController {
       role_id,
     })
 
-    //给role_access增加数据 把获取的权限和角色增加到数据库
-    for (let i = 0; i < access_node.length; i++) {
+    if (access_node) {
 
-      const roleAccessData = new this.ctx.model.RoleAccess({
-        role_id,
-        access_id: access_node[i]
-      })
+      //给role_access增加数据 把获取的权限和角色增加到数据库
+      for (let i = 0; i < access_node.length; i++) {
 
-      roleAccessData.save()
+        const roleAccessData = new this.ctx.model.RoleAccess({
+          role_id,
+          access_id: access_node[i]
+        })
+
+        roleAccessData.save()
+      }
     }
 
     await this.success(`/admin/role/auth?id=${role_id}`, '授权成功')
