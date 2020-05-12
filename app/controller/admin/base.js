@@ -49,6 +49,46 @@ class BaseController extends Controller {
 
     this.ctx.redirect(this.ctx.request.headers.referer)
   }
+
+  // 改变状态的方法
+  async changeStatus () {
+
+    const { model, attr, id } = this.ctx.request.query
+
+    const result = await this.ctx.model[model].find({
+      _id: id,
+    })
+
+    if (result.length > 0) {
+
+      const updateResult = await this.ctx.model[model].updateOne({
+        _id: id,
+      }, {
+        [attr]: Number(result[0][attr]) === 1 ? 0 : 1,
+      })
+
+      if (updateResult) {
+
+        this.ctx.body = {
+          message: '更新成功',
+          success: true,
+        }
+      } else {
+
+        this.ctx.body = {
+          message: '更新失败，参数错误',
+          success: false,
+        }
+      }
+    } else {
+
+      this.ctx.body = {
+        message: '更新失败，参数错误',
+        success: false,
+      }
+    }
+  }
+
 }
 
 module.exports = BaseController;
