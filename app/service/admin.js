@@ -28,9 +28,9 @@ class AdminController extends Controller {
     })
 
     console.log('accessUrlResult', accessUrlResult)
-    console.log('accessResultArray', accessResultArray)
+    // console.log('accessResultArray', accessResultArray)
 
-    if (accessResultArray.length) {
+    if (accessResultArray.length && accessUrlResult.length) {
 
       if (accessResultArray.includes(accessUrlResult[0]._id.toString())) {
 
@@ -42,6 +42,43 @@ class AdminController extends Controller {
 
     return false
   }
+
+  // 获取权限列表
+  async getAuthList (role_id) {
+
+    const result = await this.ctx.model.Access.aggregate([
+      {
+        $match: {
+          module_id: '0',
+        }
+      },
+      {
+        $lookup: {
+          from: 'access',
+          localField: '_id',
+          foreignField: 'module_id',
+          as: 'items',
+        },
+      },
+    ])
+
+    const accessResultArray = (await this.ctx.model.RoleAccess.find({
+      role_id,
+    })).map(item => item.access_id.toString())
+
+    for (let i = 0; i < result.length; i++) {
+
+      if (accessResultArray.includes(result[i]._id.toString())) result[i].checked = true
+
+      for (let j = 0; j < result[i].items.length; j++) {
+
+        if (accessResultArray.includes(result[i].items[j]._id.toString())) result[i].items[j].checked = true
+      }
+    }
+
+    return result
+  }
+
 }
 
 module.exports = AdminController;

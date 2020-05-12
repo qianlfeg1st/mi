@@ -77,35 +77,7 @@ class RoleController extends BaseController {
 
     const role_id = this.ctx.query.id
 
-    const result = await this.ctx.model.Access.aggregate([
-      {
-        $match: {
-          module_id: '0',
-        }
-      },
-      {
-        $lookup: {
-          from: 'access',
-          localField: '_id',
-          foreignField: 'module_id',
-          as: 'items',
-        },
-      },
-    ])
-
-    const accessResultArray = (await this.ctx.model.RoleAccess.find({
-      role_id,
-    })).map(item => item.access_id.toString())
-
-    for (let i = 0; i < result.length; i++) {
-
-      if (accessResultArray.includes(result[i]._id.toString())) result[i].checked = true
-
-      for (let j = 0; j < result[i].items.length; j++) {
-
-        if (accessResultArray.includes(result[i].items[j]._id.toString())) result[i].items[j].checked = true
-      }
-    }
+    const result = await this.service.admin.getAuthList(role_id)
 
     await this.ctx.render('/admin/role/auth', {
       list: result,
