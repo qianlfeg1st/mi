@@ -22,8 +22,6 @@ class AccessController extends BaseController {
       }
     ])
 
-    console.log('result', result)
-
     await this.ctx.render('admin/access/index', {
       list: result,
     })

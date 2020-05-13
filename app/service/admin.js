@@ -27,7 +27,7 @@ class AdminController extends Controller {
       url: pathname,
     })
 
-    console.log('accessUrlResult', accessUrlResult)
+    // console.log('accessUrlResult', accessUrlResult)
     // console.log('accessResultArray', accessResultArray)
 
     if (accessResultArray.length && accessUrlResult.length) {

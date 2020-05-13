@@ -38,5 +38,12 @@ module.exports = app => {
   router.post('/admin/access/doEdit', controller.admin.access.doEdit);
   router.get('/admin/access/delete', controller.admin.base.delete);
 
+  //上传图片演示
+
+  router.get('/admin/focus', controller.admin.focus.index);
+  router.get('/admin/focus/multi', controller.admin.focus.multi);
+  router.post('/admin/focus/doSingleUpload', controller.admin.focus.doSingleUpload);
+  router.post('/admin/focus/doMultiUpload', controller.admin.focus.doMultiUpload);
+
 
 };
