@@ -19,9 +19,9 @@ class FocusController extends Controller {
     // 获取表单提交的文件流
     const stream = await this.ctx.getFileStream()
 
-    console.log('stream', stream)
-
     const { fields, filename } = stream
+
+    if (!filename) return
 
     // 上传的目录，注意目录要存在
     const target = `app/public/admin/upload/${path.basename(filename)}`
@@ -44,14 +44,35 @@ class FocusController extends Controller {
     await this.ctx.render('admin/focus/multi')
   }
 
-  // 多个图片/文件
+  // 多文件上传
   async doMultiUpload() {
 
+    const parts = this.ctx.multipart({
+      autoFields: true,
+    })
+
+    let stream
+    const files = []
+
+    while ((stream =await parts()) != null) {
+
+      if (!stream.filename) return
+
+      const fieldname = stream.fieldname
+      const target = `app/public/admin/upload/${path.basename(stream.filename)}`
+      const writeStream = fs.createWriteStream(target)
+      await pump(stream, writeStream)
+
+      files.push({
+        [fieldname]: target,
+      })
+    }
+
+    this.ctx.body = {
+      files,
+      fields: parts.field,
+    }
   }
-
-
-
-
 
 }
 
