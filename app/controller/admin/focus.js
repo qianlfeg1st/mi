@@ -4,13 +4,66 @@ const path = require('path');
 const fs = require('fs');
 const pump = require('mz-modules/pump');
 
-const Controller = require('egg').Controller;
+const BaseController = require('./base.js')
 
-class FocusController extends Controller {
+class FocusController extends BaseController {
 
-  async index() {
+  async index () {
 
     await this.ctx.render('admin/focus/index')
+  }
+
+  async add () {
+
+    await this.ctx.render('admin/focus/add')
+  }
+
+  async doAdd () {
+
+    const parts = this.ctx.multipart({
+      autoFields: true,
+    })
+
+    let stream
+    let files = {}
+
+    while ((stream =await parts()) != null) {
+
+      if (!stream.filename) {
+
+        break
+      }
+
+      const fieldname = stream.fieldname
+
+      // 上传图片的目录
+      const dir = await this.service.tools.getUploadFile(stream.filename)
+
+      const target = dir.uploadDir
+
+      const writeStream = fs.createWriteStream(target)
+
+      await pump(stream, writeStream)
+
+      files = {
+        ...files,
+        [fieldname]: dir.saveDir,
+      }
+    }
+
+    // this.ctx.body = {
+    //   files,
+    //   fields: parts.field,
+    // }
+
+    const focus = new this.ctx.model.Focus({
+      ...files,
+      ...parts.field,
+    })
+
+    const result =  await focus.save()
+
+    await this.success('/admin/focus', '增加轮播图成功')
   }
 
   // 单文件上传
@@ -47,31 +100,7 @@ class FocusController extends Controller {
   // 多文件上传
   async doMultiUpload() {
 
-    const parts = this.ctx.multipart({
-      autoFields: true,
-    })
 
-    let stream
-    const files = []
-
-    while ((stream =await parts()) != null) {
-
-      if (!stream.filename) return
-
-      const fieldname = stream.fieldname
-      const target = `app/public/admin/upload/${path.basename(stream.filename)}`
-      const writeStream = fs.createWriteStream(target)
-      await pump(stream, writeStream)
-
-      files.push({
-        [fieldname]: target,
-      })
-    }
-
-    this.ctx.body = {
-      files,
-      fields: parts.field,
-    }
   }
 
 }

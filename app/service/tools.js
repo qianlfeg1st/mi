@@ -2,6 +2,9 @@
 
 const svgCaptcha = require('svg-captcha')
 const md5 = require('md5')
+const sd = require('silly-datetime')
+const path = require('path')
+const mkdirp = require('mz-modules/mkdirp');
 const Service = require('egg').Service;
 
 class ToolsService extends Service {
@@ -25,6 +28,29 @@ class ToolsService extends Service {
   async md5 (str) {
 
     return md5(str)
+  }
+
+  async getTime () {
+
+    return new Date().getTime()
+  }
+
+  async getUploadFile (filename) {
+
+    const day = sd.format(new Date(), 'YYYYMMDD')
+
+    const dir = path.join(this.config.uploadDir, day)
+
+    await mkdirp(dir)
+
+    const d = await this.getTime()
+
+    const uploadDir = path.join(dir, d + path.extname(filename))
+
+    return {
+      uploadDir,
+      saveDir: uploadDir.slice(3).replace(/\\/g, '/')
+    }
   }
 }
 
