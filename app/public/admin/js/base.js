@@ -7,8 +7,22 @@ $(function(){
 var app={
 
 
+	
 	init:function(){
 		this.toggleAside();
+
+		this.deleteConfirm();
+
+	},
+
+	deleteConfirm:function(){
+		$('.delete').click(function(){
+
+			var flag=confirm('您确定要删除吗?');
+
+			return flag;
+
+		})
 
 	},
 	toggleAside:function(){

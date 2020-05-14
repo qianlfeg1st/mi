@@ -10,7 +10,9 @@ class FocusController extends BaseController {
 
   async index () {
 
-    await this.ctx.render('admin/focus/index')
+    await this.ctx.render('admin/focus/index', {
+      list: await this.ctx.model.Focus.find(),
+    })
   }
 
   async add () {
@@ -51,11 +53,6 @@ class FocusController extends BaseController {
       }
     }
 
-    // this.ctx.body = {
-    //   files,
-    //   fields: parts.field,
-    // }
-
     const focus = new this.ctx.model.Focus({
       ...files,
       ...parts.field,
@@ -66,41 +63,59 @@ class FocusController extends BaseController {
     await this.success('/admin/focus', '增加轮播图成功')
   }
 
-  // 单文件上传
-  async doSingleUpload () {
+  async edit () {
 
-    // 获取表单提交的文件流
-    const stream = await this.ctx.getFileStream()
+    const result = await this.ctx.model.Focus.find({
+      _id: this.ctx.query.id
+    })
 
-    const { fields, filename } = stream
+    await this.ctx.render('admin/focus/edit', {
+      list: result[0],
+    })
+  }
 
-    if (!filename) return
+  async doEdit () {
 
-    // 上传的目录，注意目录要存在
-    const target = `app/public/admin/upload/${path.basename(filename)}`
+    const parts = this.ctx.multipart({
+      autoFields: true,
+    })
 
-    // 创建可写流
-    const writeStream = fs.createWriteStream(target)
+    let stream
+    let files = {}
 
-    // 写入流
-    await pump(stream, writeStream)
+    while ((stream =await parts()) != null) {
 
-    this.ctx.body = {
-      target,
-      fields,
+      if (!stream.filename) {
+
+        break
+      }
+
+      const fieldname = stream.fieldname
+
+      // 上传图片的目录
+      const dir = await this.service.tools.getUploadFile(stream.filename)
+
+      const target = dir.uploadDir
+
+      const writeStream = fs.createWriteStream(target)
+
+      await pump(stream, writeStream)
+
+      files = {
+        ...files,
+        [fieldname]: dir.saveDir,
+      }
     }
-  }
 
-  // 多文件上传
-  async multi () {
-
-    await this.ctx.render('admin/focus/multi')
-  }
-
-  // 多文件上传
-  async doMultiUpload() {
+    const result = await this.ctx.model.Focus.updateOne({
+      _id: parts.field.id,
+    }, {
+      ...files,
+      ...parts.field,
+    })
 
 
+    await this.success('/admin/focus', '编辑轮播图成功')
   }
 
 }
