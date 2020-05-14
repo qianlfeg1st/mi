@@ -39,7 +39,7 @@ class BaseController extends Controller {
   }
 
   // 删除方法
-  async delete () {
+  async delete() {
 
     const { model, id } = this.ctx.request.query
 
@@ -51,7 +51,7 @@ class BaseController extends Controller {
   }
 
   // 改变状态的方法
-  async changeStatus () {
+  async changeStatus() {
 
     const { model, attr, id } = this.ctx.request.query
 
@@ -88,6 +88,38 @@ class BaseController extends Controller {
       }
     }
   }
+
+  //改变数量的方法
+  async  editNum() {
+
+    const { model, attr, id, num } = this.ctx.request.query
+
+    const result = await this.ctx.model[model].find({
+      _id: id,
+    })
+
+    if (result.length > 0) {
+
+      const updateResult = await this.ctx.model[model].updateOne({
+        _id: id
+      }, {
+        [attr]: num,
+      })
+
+      if (updateResult) {
+
+        this.ctx.body = { "message": '更新成功', "success": true }
+      } else {
+
+        this.ctx.body = { "message": '更新失败', "success": false }
+      }
+
+    } else {
+
+      this.ctx.body = { "message": '更新失败,参数错误', "success": false }
+    }
+  }
+
 
 }
 
