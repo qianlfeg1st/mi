@@ -8,6 +8,11 @@ module.exports = app => {
   router.get('/', controller.home.index);
 
   router.get('/admin/login', controller.admin.login.index);
+
+  router.get('/admin', controller.admin.main.index);
+  router.get('/admin/welcome', controller.admin.main.welcome);
+
+  router.get('/admin/login', controller.admin.login.index);
   router.post('/admin/doLogin', controller.admin.login.doLogin);
   router.get('/admin/loginOut', controller.admin.login.loginOut);
   router.get('/admin/changeStatus', controller.admin.base.changeStatus);
