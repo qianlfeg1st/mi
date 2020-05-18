@@ -1,6 +1,5 @@
 var BaseController = require('./base.js');
 class GoodsTypeAttributeController extends BaseController {
-
   async index() {
 
     //显示对应类型的属性
@@ -39,7 +38,10 @@ class GoodsTypeAttributeController extends BaseController {
     });
   }
 
+
   async add() {
+
+
 
     //获取类型数据
 
@@ -52,19 +54,26 @@ class GoodsTypeAttributeController extends BaseController {
       goodsTypes: goodsTypes
 
     });
+
   }
 
   async doAdd() {
+
 
     var res = new this.ctx.model.GoodsTypeAttribute(this.ctx.request.body);
 
     await res.save();   //注意
 
     await this.success('/admin/goodsTypeAttribute?id=' + this.ctx.request.body.cate_id, '增加商品类型属性成功');
+
+
   }
+
+
 
   //功能还没有实现
   async edit() {
+
 
     var id = this.ctx.query.id;
 
@@ -79,6 +88,7 @@ class GoodsTypeAttributeController extends BaseController {
 
   async doEdit() {
 
+
     var _id = this.ctx.request.body._id;
     var title = this.ctx.request.body.title;
     var description = this.ctx.request.body.description;
@@ -86,8 +96,8 @@ class GoodsTypeAttributeController extends BaseController {
     await this.ctx.model.GoodsType.updateOne({ "_id": _id }, {
       title, description
     })
-
     await this.success('/admin/goodsType', '编辑类型成功');
+
   }
 
 }
