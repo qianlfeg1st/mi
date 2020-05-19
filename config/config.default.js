@@ -10,7 +10,7 @@ module.exports = appInfo => {
 
   config.session = {
     key: 'SESSION_ID',
-    maxAge: 864000,
+    maxAge: 1111864000,
     httpOnly: true,
     encrypt: true,
     renew: true //  延长会话有效期
@@ -24,6 +24,10 @@ module.exports = appInfo => {
     match: '/admin',
   }
 
+  //配置表单数量
+  exports.multipart = {
+    fields: '50'
+  };
 
   //多模板引擎配置
   config.view = {
