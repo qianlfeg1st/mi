@@ -4,6 +4,48 @@ ul{
     padding: 0px;
 }
 
+.fr{
+
+    float: right;
+}
+
+.fl{
+
+    float: left;
+}
+
+.clear::after{
+
+    clear: both;
+    content: '';
+
+    height: 0px;
+    display: block;
+
+
+}
+
+.input{
+
+    width:600px;
+}
+
+
+.form_input span{
+    display: inline-block;
+
+    width: 100px;
+    text-align: right;
+
+}
+
+
+
+.panel-heading span{
+    position: relative;
+    top:10px;
+}
+
 .aside h4{
 	margin-top: 0px;
 	font-size: 15px;

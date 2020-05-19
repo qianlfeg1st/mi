@@ -59,11 +59,13 @@ module.exports = app => {
   //商品类型属性
   router.get('/admin/goodsTypeAttribute', controller.admin.goodsTypeAttribute.index);
   router.get('/admin/goodsTypeAttribute/add', controller.admin.goodsTypeAttribute.add);
-
   router.get('/admin/goodsTypeAttribute/edit', controller.admin.goodsTypeAttribute.edit);
-
   router.post('/admin/goodsTypeAttribute/doEdit', controller.admin.goodsTypeAttribute.doEdit);
-
   router.post('/admin/goodsTypeAttribute/doAdd', controller.admin.goodsTypeAttribute.doAdd);
+
+  //商品分类模块
+  router.get('/admin/goodsCate', controller.admin.goodsCate.index);
+  router.get('/admin/goodsCate/add', controller.admin.goodsCate.add);
+  router.post('/admin/goodsCate/doAdd', controller.admin.goodsCate.doAdd);
 
 };
