@@ -70,4 +70,8 @@ module.exports = app => {
   router.get('/admin/goodsCate/edit', controller.admin.goodsCate.edit);
   router.post('/admin/goodsCate/doEdit', controller.admin.goodsCate.doEdit);
 
+   //商品模块
+   router.get('/admin/goods', controller.admin.goods.index);
+   router.get('/admin/goods/add', controller.admin.goods.add);
+
 };
