@@ -70,12 +70,12 @@ module.exports = app => {
   router.get('/admin/goodsCate/edit', controller.admin.goodsCate.edit);
   router.post('/admin/goodsCate/doEdit', controller.admin.goodsCate.doEdit);
 
-   //商品模块
-   router.get('/admin/goods', controller.admin.goods.index);
-   router.get('/admin/goods/add', controller.admin.goods.add);
-   router.get('/admin/goods/goodsTypeAttribute', controller.admin.goods.goodsTypeAttribute);
-   router.post('/admin/goods/doAdd', controller.admin.goods.doAdd);
-   router.post('/admin/goods/goodsUploadImage', controller.admin.goods.goodsUploadImage);
-   router.post('/admin/goods/goodsUploadPhoto', controller.admin.goods.goodsUploadPhoto);
+  //商品模块
+  router.get('/admin/goods', controller.admin.goods.index);
+  router.get('/admin/goods/add', controller.admin.goods.add);
+  router.get('/admin/goods/goodsTypeAttribute', controller.admin.goods.goodsTypeAttribute);
+  router.post('/admin/goods/doAdd', controller.admin.goods.doAdd);
+  router.post('/admin/goods/goodsUploadImage', controller.admin.goods.goodsUploadImage);
+  router.post('/admin/goods/goodsUploadPhoto', controller.admin.goods.goodsUploadPhoto);
 
 };

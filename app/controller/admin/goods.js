@@ -74,17 +74,77 @@ class GoodsController extends BaseController {
               
           }      
     
-          
-          
-          
-          console.log(Object.assign(files,parts.field));
 
+
+          var formFields=Object.assign(files,parts.field);
+
+
+          console.log(formFields);
+
+          //增加商品信息
+          let goodsRes =new this.ctx.model.Goods(formFields);    
+          var result=await goodsRes.save();
     
-          // let focus =new this.ctx.model.Focus(Object.assign(files,parts.field));
-    
-          // var result=await focus.save();
-    
-          // await this.success('/admin/focus','增加轮播图成功');
+          // console.log(result._id);
+          //增加图库信息
+          if(result._id){           
+            var  goods_image_list=formFields.goods_image_list;
+           
+           
+            for(var i=0;i<goods_image_list.length;i++){                     
+                  let goodsImageRes =new this.ctx.model.GoodsImage({
+                    goods_id:result._id,
+                    img_url:goods_image_list[i]
+                  });
+            
+                  await goodsImageRes.save();
+            }
+
+          }
+          //增加商品类型数据
+
+          if(result._id){           
+
+            /*
+            attr_id_list:
+            [ '5bbac2f646f01a08f4a82e7c',
+              '5bbd7ea7e723b71e5815b7dd',
+              '5bbd7eb0e723b71e5815b7de',
+              '5bbd805ee723b71e5815b7df' ],
+            attr_value_list: [ 'windows', '8g', '1t', '1440*720\r\n' ] }
+            */
+
+
+            var attr_value_list=formFields.attr_value_list;
+            var attr_id_list=formFields.attr_id_list;
+
+            for(var i=0;i<attr_value_list.length;i++){
+                //查询goods_type_attribute
+                if(attr_value_list[i]){ 
+                    var goodsTypeAttributeResutl=await this.ctx.model.GoodsTypeAttribute.find({"_id":attr_id_list[i]})
+
+                    let goodsAttrRes =new this.ctx.model.GoodsAttr({
+                      goods_id:result._id, 
+                      cate_id:formFields.cate_id,
+                      attribute_id:attr_id_list[i],
+                      attribute_type:goodsTypeAttributeResutl[0].attr_type,
+                      attribute_title:goodsTypeAttributeResutl[0].title,
+                      attribute_value:attr_value_list[i]
+                    });
+
+                    await goodsAttrRes.save();
+                }
+            }
+
+            
+
+          }
+
+
+
+
+
+          await this.success('/admin/goods','增加商品数据成功');
         
       }  
 

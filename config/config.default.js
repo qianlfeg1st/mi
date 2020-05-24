@@ -6,11 +6,12 @@ module.exports = appInfo => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1534304805936_5738';
 
-  config.uploadDir = 'app/public/admin/upload/'
+
+  config.uploadDir = 'app/public/admin/upload';
 
   config.session = {
     key: 'SESSION_ID',
-    maxAge: 1111864000,
+    maxAge: 8640000,
     httpOnly: true,
     encrypt: true,
     renew: true //  延长会话有效期
@@ -24,22 +25,6 @@ module.exports = appInfo => {
     match: '/admin',
   }
 
-  //配置表单数量
-  exports.multipart = {
-    fields: '50'
-  };
-
-  exports.security = {
-    csrf: {
-        // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
-        ignore: ctx => {
-          if(ctx.request.url=='/admin/goods/goodsUploadImage'){
-            return true;
-          }
-          return false;
-        }
-      }
-    }
 
   //多模板引擎配置
   config.view = {
@@ -50,15 +35,40 @@ module.exports = appInfo => {
     },
   };
 
+
+  // config.multipart= {
+  //   whitelist: [ '.png' ], // 覆盖整个白名单，只允许上传 '.png' 格式
+  // }
+
+
   //配置mongose连接mongodb数据库
 
   exports.mongoose = {
     client: {
-      // url: 'mongodb://127.0.0.1/eggxiaomi',
-      url: 'mongodb://127.0.0.1:27017/eggxiaomi',
+      url: 'mongodb://127.0.0.1/eggxiaomi',
       options: {},
     }
   };
+
+  //配置表单数量
+  exports.multipart = {
+    fields: '50'
+  };
+
+
+  exports.security = {
+    csrf: {
+      // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
+      ignore: ctx => {
+        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto') {
+          return true;
+        }
+        return false;
+      }
+    }
+  }
+
+
 
   return config;
 };
