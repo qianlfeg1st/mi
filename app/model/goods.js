@@ -57,16 +57,19 @@ module.exports = app => {
         type: Number
       },
       is_hot:{
-        type: Number        
+        type: Number,
+        default:0 
       },
       is_best:{
-        type: Number
+        type: Number,
+        default:0
       },
       is_new:{
-        type: Number
+        type: Number,
+        default:0
       },
       goods_type_id:{
-        type: {type:Schema.Types.ObjectId }
+        type:Schema.Types.Mixed    //混合类型 
       },
       status: { type: Number,default:1  },    
       add_time: {           
