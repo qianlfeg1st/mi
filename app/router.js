@@ -92,4 +92,16 @@ module.exports = app => {
 
   router.post('/admin/nav/doAdd', controller.admin.nav.doAdd);
 
+  //文章分类模块
+
+  router.get('/admin/articleCate', controller.admin.articleCate.index);
+
+  router.get('/admin/articleCate/add', controller.admin.articleCate.add);
+
+  router.get('/admin/articleCate/edit', controller.admin.articleCate.edit);
+
+  router.post('/admin/articleCate/doEdit', controller.admin.articleCate.doEdit);
+
+  router.post('/admin/articleCate/doAdd', controller.admin.articleCate.doAdd);
+
 };
