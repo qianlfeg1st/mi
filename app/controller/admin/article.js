@@ -15,7 +15,7 @@ class ArticleController extends BaseController {
 
 
       //总数量
-      var totalNum=await this.ctx.model.Article.find({}).count();
+      var totalNum=await this.ctx.model.Article.find({}).countDocuments();
 
 
 
@@ -28,7 +28,7 @@ class ArticleController extends BaseController {
 
       //让文章和分类进行关联
 
-        var result=await this.ctx.model.Article.aggregate([
+         var result=await this.ctx.model.Article.aggregate([
           
             {
                 $lookup:{
@@ -150,7 +150,8 @@ class ArticleController extends BaseController {
                 
         await this.ctx.render('admin/article/edit',{
             cateList:cateResult,
-            list:result[0]
+            list:result[0],
+            prevPage:this.ctx.state.prevPage
         });
 
     }
@@ -186,11 +187,16 @@ class ArticleController extends BaseController {
 
       
         var id=parts.field.id;
+
+        var prevPage=parts.field.prevPage;
+        
         var updateResult=Object.assign(files,parts.field);
 
         await this.ctx.model.Article.updateOne({"_id":id},updateResult);
         
-        await this.success('/admin/article','修改数据成功');
+        await this.success(prevPage,'修改数据成功');
+
+
 
     }
    

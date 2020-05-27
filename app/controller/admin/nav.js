@@ -52,7 +52,8 @@ class NavController extends BaseController {
     
         await this.ctx.render('admin/nav/edit',{
 
-          list:result[0]
+          list:result[0],
+          prevPage:this.ctx.state.prevPage
         });
         
       } 
@@ -62,8 +63,12 @@ class NavController extends BaseController {
       
         var _id=this.ctx.request.body._id;       
 
+        var prevPage=this.ctx.request.body.prevPage;       
+
         await this.ctx.model.Nav.updateOne({"_id":_id},this.ctx.request.body)
-         await this.success('/admin/nav','编辑导航成功');     
+
+       
+         await this.success(prevPage,'编辑导航成功');     
 
       } 
 }
