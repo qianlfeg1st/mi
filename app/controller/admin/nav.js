@@ -8,7 +8,7 @@ class NavController extends BaseController {
 
 
         var page=this.ctx.request.query.page || 1;
-        var pageSize=5;       
+        var pageSize=15;       
         //获取当前数据表的总数量
         var totalNum=await this.ctx.model.Nav.find({}).count();
         //分页查询

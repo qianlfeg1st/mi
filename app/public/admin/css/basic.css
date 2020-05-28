@@ -133,6 +133,17 @@ table .th{
 	background: #EEEEEE;
 }
 
+table .th th{
+    
+
+    white-space: nowrap;
+}
+
+
+table td{
+    
+    word-break: break-all;    
+}
 
 /*数量*/
 
@@ -182,7 +193,7 @@ input[type=file]{
 
 /*商品详情*/
 
-.goods_content{
+.goods_content,.news_content{
 
     border: 1px solid #eee;
     margin-bottom: 20px;
