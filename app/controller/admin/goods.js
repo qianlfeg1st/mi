@@ -23,8 +23,7 @@ class GoodsController extends BaseController {
             json=Object.assign({"title":{$regex:new RegExp(keyword)}});
          }
 
-
-         var pageSize=3;
+         var pageSize=15;
         
          //获取当前数据表的总数量
 
@@ -85,6 +84,8 @@ class GoodsController extends BaseController {
       async edit() {
 
 
+
+        console.time('start');
         //获取修改数据的id
 
         var id=this.ctx.request.query.id;
@@ -186,7 +187,9 @@ class GoodsController extends BaseController {
         //商品的图库信息
         var goodsImageResult=await this.ctx.model.GoodsImage.find({"goods_id":goodsResult[0]._id}); 
 
-        console.log(goodsImageResult);
+        // console.log(goodsImageResult);
+
+        console.timeEnd('start');
       
         await this.ctx.render('admin/goods/edit',{
           colorResult:colorResult,
@@ -223,7 +226,11 @@ class GoodsController extends BaseController {
     
               files=Object.assign(files,{
                 [fieldname]:dir.saveDir    
-              })
+              });              
+
+              //生成缩略图
+              this.service.tools.jimpImg(target);
+
               
           }      
     
@@ -318,7 +325,11 @@ class GoodsController extends BaseController {
   
             files=Object.assign(files,{
               [fieldname]:dir.saveDir    
-            })
+            });
+
+             //生成缩略图
+             this.service.tools.jimpImg(target);
+
             
         }      
 

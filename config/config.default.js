@@ -7,21 +7,21 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1534304805936_5738';
 
 
-  config.uploadDir = 'app/public/admin/upload';
+  config.uploadDir='app/public/admin/upload';
 
-  config.session = {
-    key: 'SESSION_ID',
-    maxAge: 8640000,
+  config.session={
+    key:'SESSION_ID',
+    maxAge:8640000,
     httpOnly: true,
     encrypt: true,
-    renew: true //  延长会话有效期
+    renew: true //  延长会话有效期       
   }
-
+  
 
   // add your config here
   config.middleware = ['adminauth'];
 
-  config.adminauth = {
+  config.adminauth={
     match: '/admin',
   }
 
@@ -29,9 +29,8 @@ module.exports = appInfo => {
   //多模板引擎配置
   config.view = {
     mapping: {
-      '.html': 'ejs',
-
-      '.nj': 'nunjucks'
+      '.html': 'ejs'
+      // '.nj': 'nunjucks'
     },
   };
 
@@ -46,29 +45,47 @@ module.exports = appInfo => {
   exports.mongoose = {
     client: {
       url: 'mongodb://127.0.0.1/eggxiaomi',
-      options: {},
+      options: {
+        useNewUrlParser: true,
+      },
+      
     }
   };
 
   //配置表单数量
   exports.multipart = {
-    fields: '50'
+     fields: '50'
   };
 
 
   exports.security = {
     csrf: {
-      // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
-      ignore: ctx => {
-        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto') {
-          return true;
-        }
-        return false;
+        // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
+        ignore: ctx => {
+          if(ctx.request.url=='/admin/goods/goodsUploadImage' || ctx.request.url=='/admin/goods/goodsUploadPhoto'){
+            return true;
+          }
+          return false;
+        }      
       }
     }
-  }
 
 
+    //定义缩略图的尺寸
+    exports.jimpSize =[
 
+      {
+        width:180,
+        height:180
+      },{
+
+        width:400,
+        height:400
+      }
+      
+    ]
+
+
+  
   return config;
 };

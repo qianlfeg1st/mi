@@ -25,7 +25,7 @@
 							
 										<li>
 											<a href="#">
-												<img src="<%=middleNav[i].subGoods[j].goods_img%>" />
+												<img src="<%=helper.formatImg(middleNav[i].subGoods[j].goods_img,180)%>" />
 												<p><%=middleNav[i].subGoods[j].price%></p>
 											</a>
 										</li>		
@@ -188,7 +188,7 @@
 
 								<div class="hot fl">
 										<div class="xinpin"><span>新品</span></div>
-										<div class="tu"><a href=""><img src="<%=shoujiResult[i].goods_img%>"></a></div>
+										<div class="tu"><a href=""><img src="<%=helper.formatImg(shoujiResult[i].goods_img,180)%>"></a></div>
 										<div class="miaoshu"><a href="#"><%=shoujiResult[i].title%></a></div>
 										<div class="jiage"><%=shoujiResult[i].price%>元</div>
 										<!-- <div class="pingjia">372人评价</div> -->
