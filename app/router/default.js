@@ -3,20 +3,23 @@ module.exports = app => {
     const { router, controller } = app;
 
 
-    router.get('/', controller.default.index.index);
+    //配置路由中间件
 
 
+    var initMiddleware=app.middleware.init({},app);
+
+
+    router.get('/', initMiddleware,controller.default.index.index);
     
-    router.get('/plist', controller.default.product.list);
+    router.get('/plist',initMiddleware, controller.default.product.list);
+
+    router.get('/pinfo',initMiddleware, controller.default.product.info);
 
 
-    router.get('/pinfo', controller.default.product.info);
+    router.get('/pinfo',initMiddleware, controller.default.product.info);
 
 
-    router.get('/pinfo', controller.default.product.info);
-
-
-    router.get('/cart', controller.default.flow.cart);
+    router.get('/cart', initMiddleware,controller.default.flow.cart);
 
 
 

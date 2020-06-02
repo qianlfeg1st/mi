@@ -10,35 +10,35 @@
 				<ul class="clearfix" id="nav_list">
 
 
-				<%for(var i=0;i<middleNav.length;i++){ %>
-						
-
-
-					<li>
-						<a href="#" target="_blank"><%=middleNav[i].title%></a>
-
-						<%if(middleNav[i].subGoods.length>0) {%>
-					
-							<ol class="children-list clearfix">
-									
-									<%for(var j=0;j<middleNav[i].subGoods.length;j++){ %>
+					<%for(var i=0;i<middleNav.length;i++){ %>
 							
-										<li>
-											<a href="#">
-												<img src="<%=helper.formatImg(middleNav[i].subGoods[j].goods_img,180)%>" />
-												<p><%=middleNav[i].subGoods[j].price%></p>
-											</a>
-										</li>		
-										
-									<%}%>
+
+
+						<li>
+							<a href="#" target="_blank"><%=middleNav[i].title%></a>
+
+							<%if(middleNav[i].subGoods.length>0) {%>
 						
-							</ol>
+								<ol class="children-list clearfix">
+										
+										<%for(var j=0;j<middleNav[i].subGoods.length;j++){ %>
+								
+											<li>
+												<a href="#">
+													<img src="<%=helper.formatImg(middleNav[i].subGoods[j].goods_img,180)%>" />
+													<p><%=middleNav[i].subGoods[j].price%></p>
+												</a>
+											</li>		
+											
+										<%}%>
+							
+								</ol>
 
-						<%}%>
-					
-					</li>
+							<%}%>
+						
+						</li>
 
-				<%} %>
+					<%} %>
 				</ul>
 			</div>
 			<div class="search fr">
@@ -151,7 +151,7 @@
 					<div class="jiage">1799元</div>
 				</div>
 				<div class="mingxing fl"> 	
-					<div class="sub_mingxing"><a href=""><img src="/public/default/image/pinpai4.png" alt=""></a></div>
+					<div class="sub_mingxing"><a href=""><img src="/public/default/image/pinpai3.png" alt=""></a></div>
 					<div class="pinpai"><a href="">小米电视3s 55英寸</a></div>
 					<div class="youhui">5月9日，下单立减200元</div>
 					<div class="jiage">3999元</div>
