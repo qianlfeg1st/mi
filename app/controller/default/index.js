@@ -6,108 +6,109 @@ class IndexController extends Controller {
   async index() {
 
 
-    //获取顶部导航的数据
-
-    var topNav=await this.ctx.model.Nav.find({"position":1});
-
+   console.time('indextime');
+   
+    //获取顶部导航的数据   
+   var topNav=await this.ctx.service.cache.get('index_topNav');
+   if(!topNav){
+     topNav=await this.ctx.model.Nav.find({"position":1});
+     await this.ctx.service.cache.set('index_topNav',topNav,60*60);
+   }
+    
+   
 
    //轮播图
+   var focus=await this.ctx.service.cache.get('index_focus');
+   if(!focus){
+    focus=await this.ctx.model.Focus.find({"type":1});
+    await this.ctx.service.cache.set('index_focus',focus,60*60);
 
-   var focus=await this.ctx.model.Focus.find({"type":1});
+   }
+ 
 
 
    //商品分类
-
-   var goodsCate=await this.ctx.model.GoodsCate.aggregate([
-            
+   var goodsCate=await this.ctx.service.cache.get('index_goodsCate');
+   if(!goodsCate){
+    goodsCate=await this.ctx.model.GoodsCate.aggregate([
+              
+          {
+            $lookup:{
+              from:'goods_cate',
+              localField:'_id',
+              foreignField:'pid',
+              as:'items'      
+            }      
+        },
         {
-          $lookup:{
-            from:'goods_cate',
-            localField:'_id',
-            foreignField:'pid',
-            as:'items'      
-          }      
-      },
-      {
-          $match:{
-            "pid":'0'
-          }
+            $match:{
+              "pid":'0'
+            }
+        }
+
+      ])
+      await this.ctx.service.cache.set('index_goodsCate',goodsCate,60*60);
+
+  }
+
+   
+    //中间导航以及关联商品
+
+    var middleNav=await this.ctx.service.cache.get('index_middleNav'); 
+    if(!middleNav){
+      middleNav=await this.ctx.model.Nav.find({"position":2});
+      middleNav=JSON.parse(JSON.stringify(middleNav));  //1、不可扩展对象
+      for(var i=0;i<middleNav.length;i++){     
+        if(middleNav[i].relation){
+              //数据库查找relation对应的商品            
+              try{
+                  var tempArr=middleNav[i].relation.replace(/，/g,',').split(',');
+                  var tempRelationIds=[];
+                  tempArr.forEach((value)=>{
+                    tempRelationIds.push({
+                      "_id":this.app.mongoose.Types.ObjectId(value)
+                    })
+                  })
+                  var relationGoods=await this.ctx.model.Goods.find({
+                    $or:tempRelationIds
+                  },'title goods_img');
+
+                middleNav[i].subGoods=relationGoods;
+
+              }catch(err){   //2、如果用户输入了错误的ObjectID（商品id）
+
+                middleNav[i].subGoods=[];
+              }
+        }else{
+
+            middleNav[i].subGoods=[];
+        }
       }
 
-    ])
+      await this.ctx.service.cache.set('index_middleNav',middleNav,60*60);
 
-
-    //获取中间导航的数据
-
-    /*
-      不可拓展属性的对象    http://bbs.itying.com/topic/5bea72c10e525017c44947cf
-    */
-
- 
-    var middleNav=await this.ctx.model.Nav.find({"position":2});
-
-    middleNav=JSON.parse(JSON.stringify(middleNav));  //1、不可扩展对象
-
-    for(var i=0;i<middleNav.length;i++){     
-       if(middleNav[i].relation){
-            //数据库查找relation对应的商品            
-            try{
-                var tempArr=middleNav[i].relation.replace(/，/g,',').split(',');
-                var tempRelationIds=[];
-                tempArr.forEach((value)=>{
-                  tempRelationIds.push({
-                    "_id":this.app.mongoose.Types.ObjectId(value)
-                  })
-                })
-                var relationGoods=await this.ctx.model.Goods.find({
-                  $or:tempRelationIds
-                },'title goods_img');
-
-              middleNav[i].subGoods=relationGoods;
-
-            }catch(err){   //2、如果用户输入了错误的ObjectID（商品id）
-
-              middleNav[i].subGoods=[];
-            }
-       }else{
-
-          middleNav[i].subGoods=[];
-       }
 
     }
 
 
 
-  
-
-    //获取手机分类对应的数据
-
-
-          //1、获取当前分类下面的所有子分类
-
-          
-          // var shoujiCateIdsResult=await this.ctx.model.GoodsCate.find({"pid":this.app.mongoose.Types.ObjectId('5bbf058f9079450a903cb77b')},'_id');
-            
-          // //2、商品表里面查找分类id 在手机分类的子分类里面的（推荐的）所有数据
-
-          // var cateIdsArr=[];
-          // shoujiCateIdsResult.forEach((value)=>{
-          //   cateIdsArr.push({
-          //     "cate_id":value._id
-          //   })
-          // })
-
-        
-          // var shoujiResult=await this.ctx.model.Goods.find({
-          //   $or:cateIdsArr
-          // })
-
     //手机
-    var shoujiResult=await this.service.goods.get_category_recommend_goods('5bbf058f9079450a903cb77b','best',8);
+
+
+    var shoujiResult=await this.ctx.service.cache.get('index_shoujiResult'); 
+
+    if(!shoujiResult){
+      shoujiResult=await this.service.goods.get_category_recommend_goods('5bbf058f9079450a903cb77b','best',8);
+      await this.ctx.service.cache.set('index_shoujiResult',shoujiResult,60*60);
+
+    }
+    
     //电视
     var dianshiResult=await this.service.goods.get_category_recommend_goods('5bbf05ac9079450a903cb77c','best',10);
 
-    console.log(dianshiResult);
+    
+
+   console.timeEnd('indextime');
 
 
     await this.ctx.render('default/index',{

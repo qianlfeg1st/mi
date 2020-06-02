@@ -52,6 +52,17 @@ module.exports = appInfo => {
     }
   };
 
+
+  //redis数据库连接地址
+  config.redis = {
+    client: {
+      port: 6379,          // Redis port
+      host: '127.0.0.1',   // Redis host
+      password: '',
+      db: 0
+    }
+  }
+
   //配置表单数量
   exports.multipart = {
      fields: '50'
