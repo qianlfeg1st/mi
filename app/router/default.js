@@ -16,7 +16,7 @@ module.exports = app => {
     router.get('/pinfo',initMiddleware, controller.default.product.info);
 
 
-    router.get('/pinfo',initMiddleware, controller.default.product.info);
+    router.get('/getImagelist',initMiddleware, controller.default.product.getImagelist);
 
 
     router.get('/cart', initMiddleware,controller.default.flow.cart);

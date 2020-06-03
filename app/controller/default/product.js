@@ -112,11 +112,65 @@ class ProductController extends Controller {
   //6、当前商品关联的图片
 
 
+    var goodsImageResult=await this.ctx.model.GoodsImage.find({"goods_id":id}).limit(8);
+
+    // console.log(goodsImageResult);
 
 
-    console.log(goodsColor);
+
+    
+  //7、获取规格参数信息
 
 
+  var goodsAttr=await this.ctx.model.GoodsAttr.find({"goods_id":id});
+
+  console.log(goodsAttr);
+
+
+
+
+  //8、获取更多参数  循环商品属性
+
+    /*
+
+      颜色:红色,白色,黄色 |  尺寸:41,42,43
+
+        [ 
+          
+          { cate: '颜色', list: [ '红色', '白色', '黄色 ' ] },
+          { cate: ' 尺寸', list: [ '41', '42', '43' ] } 
+      
+        ]
+
+
+      算法：
+
+        var goodsAttr='颜色红色,白色,黄色 | 尺寸a41,42,43';
+      
+        if(goodsAttr&& goodsAttr.indexOf(':')!=-1){    
+            goodsAttr=goodsAttr.replace(/，/g,',');
+            goodsAttr=goodsAttr.replace(/：/g,':');            
+            goodsAttr= goodsAttr.split('|');
+            for( var i=0;i<goodsAttr.length;i++){                
+                if(goodsAttr[i].indexOf(':')!=-1){
+                    goodsAttr[i]={
+                        cate:goodsAttr[i].split(':')[0],
+                        list:goodsAttr[i].split(':')[1].split(',')
+                    };
+                }else{
+                    goodsAttr[i]={}
+                }
+            }
+
+        }else{
+          goodsAttr=[]
+          
+        }
+        console.log(goodsAttr);
+
+    */   
+
+  
 
     await this.ctx.render('default/product_info.html',{
 
@@ -124,10 +178,45 @@ class ProductController extends Controller {
       relationGoods:relationGoods,
       goodsColor:goodsColor,
       goodsGift:goodsGift,
-      goodsFitting:goodsFitting
+      goodsFitting:goodsFitting,
+      goodsImageResult:goodsImageResult,
+      goodsAttr:goodsAttr
       
     });
     
+  }
+
+
+  //根据 颜色以及商品id获取商品图片信息
+  async getImagelist(){
+
+
+    try {
+
+      var color_id=this.ctx.request.query.color_id;
+      var goods_id=this.ctx.request.query.goods_id;
+  
+      var goodsImages=await this.ctx.model.GoodsImage.find({"goods_id":goods_id,"color_id":this.app.mongoose.Types.ObjectId(color_id)});
+  
+      
+      if(goodsImages.length==0){
+
+        var goodsImages=await this.ctx.model.GoodsImage.find({"goods_id":goods_id}).limit(8);
+      }
+
+      // console.log(goodsImages);
+      this.ctx.body={"success":true,"result":goodsImages};
+
+      
+    } catch (error) {
+
+      this.ctx.body={"success":false,"result":[]};
+      
+    }
+   
+
+
+
   }
 }
 

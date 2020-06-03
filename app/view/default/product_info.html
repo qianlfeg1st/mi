@@ -15,17 +15,17 @@
 			
 
 			<div class="swiper-container">
-				<div class="swiper-wrapper">
-					<div class="swiper-slide">
+				<div class="swiper-wrapper" id="swiper-wrapper">
+					<%for(var i=0;i<goodsImageResult.length;i++){%>
 
-							<img src="/public/default/image/liebiao_xiaomi6.jpg">
-					</div>
-					<div class="swiper-slide">
-							<img src="/public/default/image/liebiao_xiaomi6.jpg">
-					</div>
-					<div class="swiper-slide">
-							<img src="/public/default/image/liebiao_xiaomi6.jpg">
-					</div>				
+							
+						<div class="swiper-slide">
+
+								<img src="<%=goodsImageResult[i].img_url%>">
+						</div>
+
+					<%}%>
+							
 				</div>
 
 				<div class="swiper-pagination"></div>
@@ -64,13 +64,15 @@
 			<%}%>
 
 
+
+
 			<%if(goodsColor.length>0){%>
 
 				<div class="ft20 ml20 mt20 clear">选择颜色</div>
-				<div class="xzbb ml20 mt10 clearfix">
+				<div class="xzbb ml20 mt10 clearfix" id="color_list">
 					
 						<%for(var i=0;i<goodsColor.length;i++){%>
-						<div class="banben fl">
+						<div class="banben fl" goods_id="<%=productInfo._id%>" goods_color="<%=goodsColor[i]._id%>">
 							<a>
 								<span class="yuandian" style="background:<%=goodsColor[i].color_value%>"></span>
 								<span class="yanse"><%=goodsColor[i].color_name%></span>
@@ -170,42 +172,30 @@
 						<div class="detail_info_item">
 							<ul>
 			
-								<li class="row clearfix">
+								
+
+								<%for(var i=0;i<goodsAttr.length;i++){%>
+
+
+									<%if(goodsAttr[i].attribute_value){%>
+										<li class="row clearfix">
+					
+											<div class="span5">
+					
+													<h2><%=goodsAttr[i].attribute_title%></h2>
+											</div>
+					
+											<div class="span15">
+													<%-helper.formatAttr(goodsAttr[i].attribute_value)%>
+											</div>
+					
+					
+										</li>
+
+									
+									<%}%>
 			
-									<div class="span5">
-			
-											<h2>充电与电池</h2>
-									</div>
-			
-									<div class="span15">
-			
-											有线充电支持 QC 4.0+ 快充<br>
-											USB Type-C 双面充电接口<br>
-											内置电池，免更换<br>
-											标配 18W QC3.0 充电器   &amp;   附赠 10W 无线充电器
-									</div>
-			
-			
-								</li>
-			
-			
-								<li class="row clearfix">
-			
-										<div class="span5">
-				
-												<h2>充电与电池</h2>
-										</div>
-				
-										<div class="span15">
-				
-												有线充电支持 QC 4.0+ 快充<br>
-												USB Type-C 双面充电接口<br>
-												内置电池，免更换<br>
-												标配 18W QC3.0 充电器   &amp;   附赠 10W 无线充电器
-										</div>
-				
-				
-									</li>
+								 <%}%>
 								
 							</ul>
 						</div>

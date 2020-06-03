@@ -1,20 +1,48 @@
 
 var sd = require('silly-datetime');
 
-var path = require('path');
+var path=require('path');
 
-module.exports = {
+var showdown  = require('showdown');
 
 
-  //parmas  时间戳          13位的时间戳
-  formatTime(parmas) {
+/*
+https://www.npmjs.com/package/showdown
 
-    return sd.format(new Date(parmas), 'YYYY-MM-DD HH:mm');
-  },
+1、安装
 
-  formatImg(dir, width, height) {
+cnpm  install showdown --save
 
-    height = height || width;
-    return dir + '_' + width + 'x' + height + path.extname(dir);
-  }
+2、引入
+
+var showdown  = require('showdown');
+
+
+3、使用
+
+
+   var converter = new showdown.Converter();
+   var  text      = '# hello, markdown!';
+   var  html      = converter.makeHtml(text);
+
+*/
+
+module.exports={
+
+
+    //parmas  时间戳          13位的时间戳
+    formatTime(parmas){
+        
+        return sd.format(new Date(parmas), 'YYYY-MM-DD HH:mm');
+    },
+
+    formatImg(dir,width,height){
+
+        height=height||width;        
+        return dir+'_'+width+'x'+height+path.extname(dir);
+    },
+    formatAttr(str){
+        var converter = new showdown.Converter();       
+        return converter.makeHtml(str);
+    }
 }

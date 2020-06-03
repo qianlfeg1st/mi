@@ -188,8 +188,8 @@ class GoodsController extends BaseController {
         var goodsImageResult=await this.ctx.model.GoodsImage.find({"goods_id":goodsResult[0]._id}); 
 
         // console.log(goodsImageResult);
-
-        console.timeEnd('start');
+        
+        
       
         await this.ctx.render('admin/goods/edit',{
           colorResult:colorResult,
@@ -364,7 +364,7 @@ class GoodsController extends BaseController {
 
         //1、删除以前的类型数据
 
-        await this.ctx.model.GoodsAttr.deleteOne({"goods_id":goods_id}); 
+        await this.ctx.model.GoodsAttr.deleteMany({"goods_id":goods_id}); 
         
         //2、重新增加新的商品类型数据
 
@@ -381,7 +381,7 @@ class GoodsController extends BaseController {
 
           for(var i=0;i<attr_value_list.length;i++){
               //查询goods_type_attribute
-              if(attr_value_list[i]){ 
+              // if(attr_value_list[i]){ 
                   var goodsTypeAttributeResutl=await this.ctx.model.GoodsTypeAttribute.find({"_id":attr_id_list[i]})
 
                   let goodsAttrRes =new this.ctx.model.GoodsAttr({
@@ -394,7 +394,7 @@ class GoodsController extends BaseController {
                   });
 
                   await goodsAttrRes.save();
-              }
+              // }
           }
 
         }
