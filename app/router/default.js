@@ -38,7 +38,13 @@ module.exports = app => {
 
 
 
+    //购物车
 
+
+    router.get('/addCart', controller.default.cart.addCart);
+    
+    router.get('/cartList', controller.default.cart.cartList);
+    
 
     
 
