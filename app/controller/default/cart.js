@@ -110,16 +110,11 @@ class CartController extends Controller {
         this.ctx.redirect('/addCartSuccess?goods_id='+goods_id+'&color_id='+color_id);
 
     }
-
-
-   
     
   }
 
   async addCartSuccess(){
 
-
-    
 
         var goods_id=this.ctx.request.query.goods_id;
         var color_id=this.ctx.request.query.color_id;
@@ -149,115 +144,203 @@ class CartController extends Controller {
         }
   }
 
-  //增加购物车数量
-async incCart(){
+    //增加购物车数量
+    async incCart(){
 
-    var goods_id=this.ctx.request.query.goods_id;
-    var color=this.ctx.request.query.color;
+        var goods_id=this.ctx.request.query.goods_id;
+        var color=this.ctx.request.query.color;
 
-    var goodsResult=await this.ctx.model.Goods.find({"_id":goods_id});
-    if(goodsResult.length==0){
-        this.ctx.body={
-            "success":false,
-            msg:'修改数量失败'          
-        }
-    }else{
-
-            var cartList=this.service.cookies.get('cartList');
-            var currentNum=0;  //当前数量
-            var allPrice=0;   //总价格
-            for(var i=0;i<cartList.length;i++){
-                if(cartList[i]._id==goods_id &&cartList[i].color==color){ 
-                    cartList[i].num+=1;                      
-                    currentNum=cartList[i].num;
-                    
-                }
-                if(cartList[i].checked){
-                    allPrice+=cartList[i].price*cartList[i].num;
-                }
-            }
-            this.service.cookies.set('cartList',cartList);   
-
-
+        var goodsResult=await this.ctx.model.Goods.find({"_id":goods_id});
+        if(goodsResult.length==0){
             this.ctx.body={
-                "success":true,
-                num:currentNum,
-                allPrice:allPrice
+                "success":false,
+                msg:'修改数量失败'          
             }
+        }else{
+
+                var cartList=this.service.cookies.get('cartList');
+                var currentNum=0;  //当前数量
+                var allPrice=0;   //总价格
+                for(var i=0;i<cartList.length;i++){
+                    if(cartList[i]._id==goods_id &&cartList[i].color==color){ 
+                        cartList[i].num+=1;                      
+                        currentNum=cartList[i].num;
+                        
+                    }
+                    if(cartList[i].checked){
+                        allPrice+=cartList[i].price*cartList[i].num;
+                    }
+                }
+                this.service.cookies.set('cartList',cartList);   
+
+
+                this.ctx.body={
+                    "success":true,
+                    num:currentNum,
+                    allPrice:allPrice
+                }
+        }
+
     }
 
-  }
+    //减少购物车数量  
+    async decCart(){
 
-//减少购物车数量  
-async decCart(){
+        var goods_id=this.ctx.request.query.goods_id;
 
-    var goods_id=this.ctx.request.query.goods_id;
+        var color=this.ctx.request.query.color;
 
-    var color=this.ctx.request.query.color;
-
-    var goodsResult=await this.ctx.model.Goods.find({"_id":goods_id});
-    if(goodsResult.length==0){
-        this.ctx.body={
-            "success":false,
-            msg:'修改数量失败'          
-        }
-    }else{
-
-            var cartList=this.service.cookies.get('cartList');
-            var currentNum=0;  //当前数量
-            var allPrice=0;   //总价格
-            for(var i=0;i<cartList.length;i++){
-                if(cartList[i]._id==goods_id &&cartList[i].color==color){ 
-                    if( cartList[i].num >1){
-                        cartList[i].num-=1;  
-                    }
-                    currentNum=cartList[i].num;
-                   
-                }
-
-                if(cartList[i].checked){
-                    allPrice+=cartList[i].price*cartList[i].num;
-                }
-            }
-            this.service.cookies.set('cartList',cartList);   
-
-
+        var goodsResult=await this.ctx.model.Goods.find({"_id":goods_id});
+        if(goodsResult.length==0){
             this.ctx.body={
-                "success":true,
-                num:currentNum,
-                allPrice:allPrice
+                "success":false,
+                msg:'修改数量失败'          
             }
+        }else{
+
+                var cartList=this.service.cookies.get('cartList');
+                var currentNum=0;  //当前数量
+                var allPrice=0;   //总价格
+                for(var i=0;i<cartList.length;i++){
+                    if(cartList[i]._id==goods_id &&cartList[i].color==color){ 
+                        if( cartList[i].num >1){
+                            cartList[i].num-=1;  
+                        }
+                        currentNum=cartList[i].num;
+                    
+                    }
+
+                    if(cartList[i].checked){
+                        allPrice+=cartList[i].price*cartList[i].num;
+                    }
+                }
+                this.service.cookies.set('cartList',cartList);   
+                this.ctx.body={
+                    "success":true,
+                    num:currentNum,
+                    allPrice:allPrice
+                }
+        }
+    }
+
+ 
+
+  //改变购物车商品的状态  
+  async changeOneCart(){
+
+        var goods_id=this.ctx.request.query.goods_id;
+        var color=this.ctx.request.query.color;
+
+        var goodsResult=await this.ctx.model.Goods.find({"_id":goods_id});
+
+        if(!goodsResult || goodsResult.length==0){
+            this.ctx.body={
+                "success":false,
+                msg:'改变状态失败'          
+            }
+        }else{
+                var cartList=this.service.cookies.get('cartList');                
+                var allPrice=0;   //总价格
+                for(var i=0;i<cartList.length;i++){
+                    if(cartList[i]._id==goods_id &&cartList[i].color==color){ 
+                        cartList[i].checked=!cartList[i].checked; 
+                    }                   
+                    //计算总价
+                    if(cartList[i].checked){
+                        allPrice+=cartList[i].price*cartList[i].num;
+                    }
+                }
+
+                this.service.cookies.set('cartList',cartList);  
+                this.ctx.body={
+                    "success":true,                   
+                    allPrice:allPrice
+                }
+        }
+
+
     }
     
 
+  //改变所有购物车商品的状态  
+  async changeAllCart(){      
+        var type=this.ctx.request.query.type;       
+        var cartList=this.service.cookies.get('cartList');                
+        var allPrice=0;   //总价格
+        for(var i=0;i<cartList.length;i++){           
 
-}
+            if(type==1){
+                cartList[i].checked=true; 
+            }else{
+                cartList[i].checked=false; 
+            }                        
+            //计算总价
+            if(cartList[i].checked){
+                allPrice+=cartList[i].price*cartList[i].num;
+            }
+        }
 
-
-
-  async cartList(){
-
-    var cartList=this.service.cookies.get('cartList');
-
-    var allPrice=0;
-
-    for(var i=0;i<cartList.length;i++){
-
-        if(cartList[i].checked){
-
-            allPrice+=cartList[i].price*cartList[i].num;
+        this.service.cookies.set('cartList',cartList);  
+        this.ctx.body={
+            "success":true,                   
+            allPrice:allPrice
         }
 
     }
 
 
+    async removeCart(){
 
-    await this.ctx.render('default/cart.html',{
+        var goods_id=this.ctx.request.query.goods_id;
+        var color=this.ctx.request.query.color;
 
-        cartList:cartList,
-        allPrice:allPrice
-        
-    });
+        var goodsResult=await this.ctx.model.Goods.find({"_id":goods_id});
+
+        if(!goodsResult || goodsResult.length==0){
+           
+            this.ctx.redirect('/cart');
+
+        }else{
+                var cartList=this.service.cookies.get('cartList');                
+               
+                for(var i=0;i<cartList.length;i++){
+                    if(cartList[i]._id==goods_id &&cartList[i].color==color){ 
+                       
+                        cartList.splice(i,1);
+
+                    }    
+                }
+                this.service.cookies.set('cartList',cartList);  
+                this.ctx.redirect('/cart');
+        }
+
+
+    }
+
+
+    async cartList(){
+
+        var cartList=this.service.cookies.get('cartList');
+
+        var allPrice=0;
+
+        for(var i=0;i<cartList.length;i++){
+
+            if(cartList[i].checked){
+
+                allPrice+=cartList[i].price*cartList[i].num;
+            }
+
+        }
+
+
+
+        await this.ctx.render('default/cart.html',{
+
+            cartList:cartList,
+            allPrice:allPrice
+            
+        });
   }
 
 

@@ -46,7 +46,7 @@
 					<tr class="cart_list">
 
 							<td>
-									<input type="checkbox"  <%if(cartList[i].checked){%>checked <%}%> />
+									<input type="checkbox" goods_id="<%=cartList[i]._id%>" color="<%=cartList[i].color%>"  <%if(cartList[i].checked){%>checked <%}%> />
 							</td>
 	
 							<td>
@@ -76,11 +76,11 @@
 							</td>
 	
 							<td class="totalPrice">
-									<%=parseInt(cartList[i].price)*cartList[i].num%>元
+									<%=parseFloat(cartList[i].price)*cartList[i].num%>元
 	
 							</td>
 							<td>
-								<span><a href="#"> 删除</a></span>
+								<span><a class="delete" href="/removeCart?goods_id=<%=cartList[i]._id%>&color=<%=cartList[i].color%>"> 删除</a></span>
 							</td>
 						</tr>
 				
