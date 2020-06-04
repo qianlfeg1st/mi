@@ -60,7 +60,7 @@
                     var goods_id=$(this).attr('goods_id');
 
                     //当前的颜色值
-                    var color_id=$(this).attr('goods_color');
+                    var color_id=$(this).attr('color_id');
 
                     $.get('/getImagelist?goods_id='+goods_id+'&color_id='+color_id,function(response){
 
