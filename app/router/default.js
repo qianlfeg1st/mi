@@ -22,9 +22,9 @@ module.exports = app => {
 
     //用户中心
 
-    router.get('/login', controller.default.user.login);
+    // router.get('/login', controller.default.user.login);
 
-    router.get('/register', controller.default.user.register);
+    // router.get('/register', controller.default.user.register);
 
 
 
@@ -57,5 +57,26 @@ module.exports = app => {
 
     router.get('/removeCart', initMiddleware,controller.default.cart.removeCart);
 
+
+
+    //用户注册登录
+    router.get('/login', initMiddleware,controller.default.pass.login);
+
+    router.get('/register/registerStep1', initMiddleware,controller.default.pass.registerStep1);
+
+    router.get('/register/registerStep2', initMiddleware,controller.default.pass.registerStep2);
+    
+    router.get('/register/registerStep3', initMiddleware,controller.default.pass.registerStep3);
+
+    router.get('/pass/sendCode', initMiddleware,controller.default.pass.sendCode);
+    
+
+
+    //验证码
+
+
+    
+
+    router.get('/verify', initMiddleware,controller.default.base.verify);
     
 }

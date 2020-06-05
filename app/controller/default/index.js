@@ -6,7 +6,8 @@ class IndexController extends Controller {
   async index() {
 
 
-   console.time('indextime');
+   this.service.sendmsg.send('15029745801','555555');
+
    
    //轮播图
    var focus=await this.ctx.service.cache.get('index_focus');
@@ -19,11 +20,9 @@ class IndexController extends Controller {
     //手机
 
     var shoujiResult=await this.ctx.service.cache.get('index_shoujiResult'); 
-
     if(!shoujiResult){
       shoujiResult=await this.service.goods.get_category_recommend_goods('5bbf058f9079450a903cb77b','best',8);
       await this.ctx.service.cache.set('index_shoujiResult',shoujiResult,60*60);
-
     }
     
     //电视
