@@ -6,7 +6,6 @@ class ProductController extends Controller {
   async list() {
 
 
-
     /*
     1、获取分类id   cid
 
@@ -22,38 +21,38 @@ class ProductController extends Controller {
     */
 
 
-    var cid=this.ctx.request.query.cid;
+    const cid = this.ctx.request.query.cid;
 
 
-    //根据分类id获取当前的分类新
-    var curentCate=await this.ctx.model.GoodsCate.find({"_id":cid});
+    // 根据分类id获取当前的分类新
+    const curentCate = await this.ctx.model.GoodsCate.find({ _id: cid });
 
-    //判断是否是顶级分类
-    if(curentCate[0].pid!=0){
-        // 二级分类
-        var goodsList=await this.ctx.model.Goods.find({"cate_id":cid},'_id title price sub_title goods_img shop_price');
-        console.log(goodsList);
-    }else{
-          //顶级分类  获取当前顶级分类下面的所有的子分类
-          var subCatesIds=await this.ctx.model.GoodsCate.find({"pid":this.app.mongoose.Types.ObjectId(cid)},'_id');
-        
-          var tempArr=[];
-          for(var i=0;i<subCatesIds.length;i++){
-            tempArr.push({
-              "cate_id":subCatesIds[i]._id
-            })
-          }
-          var goodsList=await this.ctx.model.Goods.find({
-            $or:tempArr
-          },'_id title price sub_title goods_img shop_price');     
+    // 判断是否是顶级分类
+    if (curentCate[0].pid != 0) {
+      // 二级分类
+      var goodsList = await this.ctx.model.Goods.find({ cate_id: cid }, '_id title price sub_title goods_img shop_price');
+      console.log(goodsList);
+    } else {
+      // 顶级分类  获取当前顶级分类下面的所有的子分类
+      const subCatesIds = await this.ctx.model.GoodsCate.find({ pid: this.app.mongoose.Types.ObjectId(cid) }, '_id');
+
+      const tempArr = [];
+      for (let i = 0; i < subCatesIds.length; i++) {
+        tempArr.push({
+          cate_id: subCatesIds[i]._id,
+        });
+      }
+      var goodsList = await this.ctx.model.Goods.find({
+        $or: tempArr,
+      }, '_id title price sub_title goods_img shop_price');
     }
 
 
-    var tpl=curentCate[0].template?curentCate[0].template:'default/product_list.html';
+    const tpl = curentCate[0].template ? curentCate[0].template : 'default/product_list.html';
 
-    await this.ctx.render(tpl,{
+    await this.ctx.render(tpl, {
 
-      goodsList:goodsList
+      goodsList,
     });
 
 
@@ -63,95 +62,84 @@ class ProductController extends Controller {
   async info() {
 
 
-
-
-
     // 1、获取商品信息
 
-    var id=this.ctx.request.query.id;
+    const id = this.ctx.request.query.id;
 
 
-    var productInfo=await this.ctx.model.Goods.find({"_id":id});
+    const productInfo = await this.ctx.model.Goods.find({ _id: id });
 
     console.log(productInfo);
 
 
-  
-   //2、关联商品
-  var relationGoodsIds=this.ctx.service.goods.strToArray(productInfo[0].relation_goods);
-  var relationGoods=await this.ctx.model.Goods.find({
-      $or:relationGoodsIds
-  },'goods_version shop_price');
+    // 2、关联商品
+    const relationGoodsIds = this.ctx.service.goods.strToArray(productInfo[0].relation_goods);
+    const relationGoods = await this.ctx.model.Goods.find({
+      $or: relationGoodsIds,
+    }, 'goods_version shop_price');
 
 
-
-   //3、获取关联颜色
-   var goodsColorIds=this.ctx.service.goods.strToArray(productInfo[0].goods_color);
-   var goodsColor=await this.ctx.model.GoodsColor.find({
-      $or:goodsColorIds
-  });
-
+    // 3、获取关联颜色
+    const goodsColorIds = this.ctx.service.goods.strToArray(productInfo[0].goods_color);
+    const goodsColor = await this.ctx.model.GoodsColor.find({
+      $or: goodsColorIds,
+    });
 
 
-
-  //4、关联赠品
-  var goodsGiftIds=this.ctx.service.goods.strToArray(productInfo[0].goods_gift);
-   var goodsGift=await this.ctx.model.Goods.find({
-      $or:goodsGiftIds
-  });
-
-
-  //5、关联配件
-
-  var goodsFittingIds=this.ctx.service.goods.strToArray(productInfo[0].goods_fitting);
-   var goodsFitting=await this.ctx.model.Goods.find({
-      $or:goodsFittingIds
-  });
-
-  
-  //6、当前商品关联的图片
+    // 4、关联赠品
+    const goodsGiftIds = this.ctx.service.goods.strToArray(productInfo[0].goods_gift);
+    const goodsGift = await this.ctx.model.Goods.find({
+      $or: goodsGiftIds,
+    });
 
 
-    var goodsImageResult=await this.ctx.model.GoodsImage.find({"goods_id":id}).limit(8);
+    // 5、关联配件
+
+    const goodsFittingIds = this.ctx.service.goods.strToArray(productInfo[0].goods_fitting);
+    const goodsFitting = await this.ctx.model.Goods.find({
+      $or: goodsFittingIds,
+    });
+
+
+    // 6、当前商品关联的图片
+
+
+    const goodsImageResult = await this.ctx.model.GoodsImage.find({ goods_id: id }).limit(8);
 
     // console.log(goodsImageResult);
 
 
-
-    
-  //7、获取规格参数信息
+    // 7、获取规格参数信息
 
 
-  var goodsAttr=await this.ctx.model.GoodsAttr.find({"goods_id":id});
+    const goodsAttr = await this.ctx.model.GoodsAttr.find({ goods_id: id });
 
-  console.log(goodsAttr);
-
-
+    console.log(goodsAttr);
 
 
-  //8、获取更多参数  循环商品属性
+    // 8、获取更多参数  循环商品属性
 
     /*
 
       颜色:红色,白色,黄色 |  尺寸:41,42,43
 
-        [ 
-          
+        [
+
           { cate: '颜色', list: [ '红色', '白色', '黄色 ' ] },
-          { cate: ' 尺寸', list: [ '41', '42', '43' ] } 
-      
+          { cate: ' 尺寸', list: [ '41', '42', '43' ] }
+
         ]
 
 
       算法：
 
         var goodsAttr='颜色红色,白色,黄色 | 尺寸a41,42,43';
-      
-        if(goodsAttr&& goodsAttr.indexOf(':')!=-1){    
+
+        if(goodsAttr&& goodsAttr.indexOf(':')!=-1){
             goodsAttr=goodsAttr.replace(/，/g,',');
-            goodsAttr=goodsAttr.replace(/：/g,':');            
+            goodsAttr=goodsAttr.replace(/：/g,':');
             goodsAttr= goodsAttr.split('|');
-            for( var i=0;i<goodsAttr.length;i++){                
+            for( var i=0;i<goodsAttr.length;i++){
                 if(goodsAttr[i].indexOf(':')!=-1){
                     goodsAttr[i]={
                         cate:goodsAttr[i].split(':')[0],
@@ -164,57 +152,54 @@ class ProductController extends Controller {
 
         }else{
           goodsAttr=[]
-          
+
         }
         console.log(goodsAttr);
 
-    */   
+    */
 
-  
 
-    await this.ctx.render('default/product_info.html',{
+    await this.ctx.render('default/product_info.html', {
 
-      productInfo:productInfo[0],
-      relationGoods:relationGoods,
-      goodsColor:goodsColor,
-      goodsGift:goodsGift,
-      goodsFitting:goodsFitting,
-      goodsImageResult:goodsImageResult,
-      goodsAttr:goodsAttr
-      
+      productInfo: productInfo[0],
+      relationGoods,
+      goodsColor,
+      goodsGift,
+      goodsFitting,
+      goodsImageResult,
+      goodsAttr,
+
     });
-    
+
   }
 
 
-  //根据 颜色以及商品id获取商品图片信息
-  async getImagelist(){
+  // 根据 颜色以及商品id获取商品图片信息
+  async getImagelist() {
 
 
     try {
 
-      var color_id=this.ctx.request.query.color_id;
-      var goods_id=this.ctx.request.query.goods_id;
-  
-      var goodsImages=await this.ctx.model.GoodsImage.find({"goods_id":goods_id,"color_id":this.app.mongoose.Types.ObjectId(color_id)});
-  
-      
-      if(goodsImages.length==0){
+      const color_id = this.ctx.request.query.color_id;
+      const goods_id = this.ctx.request.query.goods_id;
 
-        var goodsImages=await this.ctx.model.GoodsImage.find({"goods_id":goods_id}).limit(8);
+      var goodsImages = await this.ctx.model.GoodsImage.find({ goods_id, color_id: this.app.mongoose.Types.ObjectId(color_id) });
+
+
+      if (goodsImages.length == 0) {
+
+        var goodsImages = await this.ctx.model.GoodsImage.find({ goods_id }).limit(8);
       }
 
       // console.log(goodsImages);
-      this.ctx.body={"success":true,"result":goodsImages};
+      this.ctx.body = { success: true, result: goodsImages };
 
-      
+
     } catch (error) {
 
-      this.ctx.body={"success":false,"result":[]};
-      
-    }
-   
+      this.ctx.body = { success: false, result: [] };
 
+    }
 
 
   }

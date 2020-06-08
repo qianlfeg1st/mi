@@ -6,7 +6,6 @@
 
 <link rel="stylesheet" href="/public/default/css/checkout.css" />
 
-<script src="/public/default/js/jquery-1.10.1.js"></script>	
 <script src="/public/default/js/bootstrap.js"></script>	
 
 <!-- start banner_x -->
@@ -34,26 +33,28 @@
 
 			<div id="addressList">
 					
-				
 					
-						<div class="address-item J_addressItem"> 
-							
-							<dl> 								
-										<dt> <em class="uname">张三</em> </dt> 									
-										<dd class="utel">152016856211</dd>	
-										<dd class="uaddress"> 北京市海淀区西二旗xxx </dd> 
-							</dl> 
-							
-							<div class="actions"> 						
-									<a href="javascript:void(0);" class="modify addressModify">修改</a>			
-							</div> 		
-						</div>
+						<%for(var i=0;i<addressList.length;i++){%>
+					
+							<div class="address-item J_addressItem  <%if(addressList[i].default_address){%>selected <%}%>" data-id="<%=addressList[i]._id%>" data-name="<%=addressList[i].name%>" data-phone="<%=addressList[i].phone%>" data-address="<%=addressList[i].address%>"> 
+								
+								<dl> 								
+											<dt> <em class="uname"><%=addressList[i].name%></em> </dt> 									
+											<dd class="utel"><%=addressList[i].phone%></dd>	
+											<dd class="uaddress"> <%=addressList[i].address%> </dd> 
+								</dl> 
+								
+								<div class="actions" data-id="<%=addressList[i]._id%>"> 						
+										<a href="javascript:void(0);" class="modify addressModify">修改</a>			
+								</div> 		
+							</div>
+						<%}%>
 					
 			</div>
 
 
 			<!-- addresslist end -->
-			<div class="address-item address-item-new" id="J_newAddress"  data-toggle="modal" data-target="#myModal">
+			<div class="address-item address-item-new" id="J_newAddress"  data-toggle="modal" data-target="#addAddress">
 				<i class="iconfont">+</i> 添加新地址
 			</div>
 		</div>
@@ -203,36 +204,8 @@
 </div>
 
 
-
-<script>
-
-$(function(){
-
-
-	$('#addAddress').click(function(){
-
-		
-		var name=$('#add_name').val();
-		var phone=$('#add_phone').val();
-		var address=$('#add_address').val();
-		var zipcode=$('#add_zipcode').val();
-
-		if(name=='' || phone=="" || address==""){
-			return false;
-		}
-
-		
-		
-	})
-
-
-		
-})
-
-</script>
-
 <!-- 收货地址增加 -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal fade" id="addAddress" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 			<div class="modal-header">
@@ -260,13 +233,105 @@ $(function(){
 			
 			<div class="modal-footer">
 				
-				<button type="button" class="btn btn-primary" id="addAddress">增加</button>
+				<button type="button" class="btn btn-primary" id="addAddressButton">增加</button>
 
 				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 			</div>
 			</div>
 		</div>
 	</div>
+
+
+	<script>
+
+
+		$(function(){
+
+			
+
+			$('#addAddressButton').click(function(){
+
+
+					var name=$('#add_name').val();
+					var phone=$('#add_phone').val();
+					var address=$('#add_address').val();
+					var zipcode=$('#add_zipcode').val();
+
+					//判断格式是否正确  -自己完善
+					if(name=='' || phone=="" || address==""){
+
+						alert('格式不正确')
+						return false;
+					}
+					//csrf
+					$.post('/user/addAddress',{name:name,phone:phone,address:address,zipcode:zipcode},function(response){
+
+
+							console.log(response);
+
+
+							var addressList=response.result;
+
+							var str='';
+							
+							if(response.success==true){
+
+									for(var i=0;i<addressList.length;i++){
+
+										if(addressList[i].default_address){
+										
+											str+='<div class="address-item J_addressItem selected" data-id="'+addressList[i]._id+'" data-name="'+addressList[i].name+'" data-phone="'+addressList[i].phone+'" data-address="'+addressList[i].address+'" > ';							
+												str+='<dl>';						
+															str+='<dt> <em class="uname">'+addressList[i].name+'</em> </dt>';				
+															str+='<dd class="utel">'+addressList[i].phone+'</dd>';		
+															str+='<dd class="uaddress">'+addressList[i].address+'</dd>';	
+												str+='</dl>';
+													
+												str+='<div class="actions">';						
+													str+='<a href="javascript:void(0);" data-id="'+addressList[i]._id+'" class="modify addressModify">修改</a>';	
+												str+='</div>';	
+											str+='</div>';
+											
+										}else{
+
+												str+='<div class="address-item J_addressItem" data-id="'+addressList[i]._id+'" data-name="'+addressList[i].name+'" data-phone="'+addressList[i].phone+'" data-address="'+addressList[i].address+'" > ';							
+												str+='<dl>';						
+															str+='<dt> <em class="uname">'+addressList[i].name+'</em> </dt>';				
+															str+='<dd class="utel">'+addressList[i].phone+'</dd>';		
+															str+='<dd class="uaddress">'+addressList[i].address+'</dd>';	
+												str+='</dl>';
+													
+												str+='<div class="actions">';						
+													str+='<a href="javascript:void(0);" data-id="'+addressList[i]._id+'" class="modify addressModify">修改</a>';	
+												str+='</div>';	
+											str+='</div>';
+											
+										}
+
+									}
+
+									//增加
+
+									$("#addressList").html(str);
+
+
+							}else{
+									alert('增加失败');
+							}
+
+
+
+
+
+							$('#addAddress').modal('hide');
+
+					})
+
+			})
+
+		})
+	
+	</script>
 
 
 
