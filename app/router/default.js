@@ -8,6 +8,7 @@ module.exports = app => {
 
     var initMiddleware=app.middleware.init({},app);
 
+    var userauthMiddleware=app.middleware.userauth({},app);
 
     router.get('/', initMiddleware,controller.default.index.index);
     
@@ -62,6 +63,8 @@ module.exports = app => {
     //用户注册登录
     router.get('/login', initMiddleware,controller.default.pass.login);
 
+    router.post('/pass/doLogin', initMiddleware,controller.default.pass.doLogin);    
+
     router.get('/register/registerStep1', initMiddleware,controller.default.pass.registerStep1);
 
     router.get('/register/registerStep2', initMiddleware,controller.default.pass.registerStep2);
@@ -73,14 +76,18 @@ module.exports = app => {
     router.get('/pass/validatePhoneCode', initMiddleware,controller.default.pass.validatePhoneCode);
 
     router.post('/pass/doRegister', initMiddleware,controller.default.pass.doRegister);
-    
+
+    router.get('/pass/loginOut', initMiddleware,controller.default.pass.loginOut);
     
 
     //验证码
 
 
+    router.get('/verify', initMiddleware,controller.default.base.verify);
     
 
-    router.get('/verify', initMiddleware,controller.default.base.verify);
+
+    //去结算
+    router.get('/buy/checkout', initMiddleware,userauthMiddleware,controller.default.buy.checkout);
     
 }

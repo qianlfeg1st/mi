@@ -8,6 +8,65 @@ class PassController extends Controller {
   async login() {  
     await this.ctx.render('default/pass/login.html');
   }
+
+
+  async doLogin() {  
+    var username=this.ctx.request.body.username;  
+    var password=this.ctx.request.body.password;  
+    var identify_code=this.ctx.request.body.identify_code;
+
+      if(identify_code!=this.ctx.session.identify_code){     
+        
+          //重新生成验证码 为了安全
+          var captcha=await this.service.tools.captcha(120,50);  
+          this.ctx.session.identify_code = captcha.text;        
+
+          this.ctx.body={
+            success:false,
+            msg:'输入的图形验证码不正确'
+          }
+
+          
+      }else{
+
+        password=await this.service.tools.md5(password);
+
+        var userResult=await this.ctx.model.User.find({"phone":username,password:password},'_id phone last_ip add_time email status');
+
+        if(userResult.length){         
+         
+          //cookies 安全      加密
+            this.service.cookies.set('userinfo',userResult[0]); 
+            this.ctx.body={
+              success:true,
+              msg:'登录成功'
+            }
+        }else{
+
+            //重新生成验证码
+            var captcha=await this.service.tools.captcha(120,50);  
+            this.ctx.session.identify_code = captcha.text;  
+
+            this.ctx.body={
+              success:false,
+              msg:'用户名或者密码错误'
+            }
+        }
+
+        
+      }
+
+
+  }
+
+
+  //退出登录
+  async loginOut(){
+
+    this.service.cookies.set('userinfo','');
+    
+    this.ctx.redirect('/');
+  }
    //注册第一步 输入手机号
   async registerStep1() {  
     await this.ctx.render('default/pass/register_step1.html');
