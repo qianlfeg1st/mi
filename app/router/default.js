@@ -69,8 +69,12 @@ module.exports = app => {
     router.get('/register/registerStep3', initMiddleware,controller.default.pass.registerStep3);
 
     router.get('/pass/sendCode', initMiddleware,controller.default.pass.sendCode);
-    
 
+    router.get('/pass/validatePhoneCode', initMiddleware,controller.default.pass.validatePhoneCode);
+
+    router.post('/pass/doRegister', initMiddleware,controller.default.pass.doRegister);
+    
+    
 
     //验证码
 

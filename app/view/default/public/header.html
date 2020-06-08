@@ -31,6 +31,11 @@
 					<div class="gouwuche fr"><a href="">购物车</a></div>
 					<div class="fr">
 						<ul>
+
+
+							<%if(userinfo && userinfo.phone){%>
+								<li><a href="#"><%=userinfo.phone%></a></li>
+							<%}%>
 							<li><a href="/login" target="_blank">登录</a></li>
 							<li>|</li>
 							<li><a href="/register/registerStep1" target="_blank" >注册</a></li>

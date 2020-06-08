@@ -6,7 +6,7 @@ class IndexController extends Controller {
   async index() {
 
 
-   this.service.sendmsg.send('15029745801','555555');
+  //  this.service.sendmsg.send('15029745801','555555');
 
    
    //轮播图

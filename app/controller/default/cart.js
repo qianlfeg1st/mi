@@ -301,7 +301,8 @@ class CartController extends Controller {
             this.ctx.redirect('/cart');
 
         }else{
-                var cartList=this.service.cookies.get('cartList');                
+                var cartList=this.service.cookies.get('cartList');     
+                           
                
                 for(var i=0;i<cartList.length;i++){
                     if(cartList[i]._id==goods_id &&cartList[i].color==color){ 
@@ -322,17 +323,21 @@ class CartController extends Controller {
 
         var cartList=this.service.cookies.get('cartList');
 
-        var allPrice=0;
 
-        for(var i=0;i<cartList.length;i++){
+        if(cartList && cartList.length>0){
 
-            if(cartList[i].checked){
+            var allPrice=0;
 
-                allPrice+=cartList[i].price*cartList[i].num;
+            for(var i=0;i<cartList.length;i++){
+
+                if(cartList[i].checked){
+
+                    allPrice+=cartList[i].price*cartList[i].num;
+                }
+
             }
 
         }
-
 
 
         await this.ctx.render('default/cart.html',{
