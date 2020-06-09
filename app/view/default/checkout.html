@@ -18,7 +18,9 @@
 
 
 
-<form action="/buy/doOrder?_csrf=<%=csrf%>" method="POST">
+<form action="/buy/doOrder?_csrf=<%=csrf%>" method="POST" id="checkoutForm">
+
+	<input type="hidden" name="orderSign" value="<%=orderSign%>" />
 	<div class="checkout-box">
 		<div class="section section-address">
 			<div class="section-header clearfix">
@@ -494,6 +496,27 @@
 
 
 						
+			})
+
+			//提交数据监测是否有默认收货地址
+
+
+			var flag=true;
+			$("#checkoutForm").submit(function(){
+					if(flag){
+						flag=false;
+						var addressCount=$('#addressList .selected').length;					
+						if(!addressCount){
+							alert('请填写默认收货地址');
+							return false;
+						}
+						return true;
+
+					}else{
+
+						return false;
+					}
+					
 			})
 
 		})

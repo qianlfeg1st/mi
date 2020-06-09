@@ -27,7 +27,7 @@
 				</div>
 				<div class="fr">
 					<p class="total">
-						应付总额：<span class="money"><em>399</em>元</span>
+						应付总额：<span class="money"><em><%=orderResult.all_price%></em>元</span>
 					</p>
 					<a href="javascript:void(0);" class="show-detail" id="J_showDetail" data-stat-id="db85b2885a2fdc53" onclick="_msq.push(['trackEvent', 'f1542ececd0b6bc5-db85b2885a2fdc53', 'javascript:void0', 'pcpid', '']);">订单详情<i class="iconfont"></i></a>
 				</div>
@@ -39,18 +39,23 @@
 						<div class="label">订单号：</div>
 						<div class="content">
 							<span class="order-num">
-										5181208780370909                                </span>
+								<%=orderResult.order_id%>                                </span>
 						</div>
 					</li>
 					<li class="clearfix">
 						<div class="label">收货信息：</div>
 						<div class="content">
-							二狗子 150****5001&nbsp;&nbsp; 湖北&nbsp;&nbsp;宜昌市&nbsp;&nbsp;xxxx&nbsp;&nbsp;xxxx&nbsp;&nbsp;xxxxxxxxxxxxxxx </div>
+							<%=orderResult.name%>    <%=orderResult.phone%>&nbsp;&nbsp; <%=orderResult.address%> </div>
 					</li>
 					<li class="clearfix">
 						<div class="label">商品名称：</div>
 						<div class="content">
-							小米米家后视镜行车记录仪 黑色 </div>
+							<%for(var i=0;i<orderItemResult.length;i++){%>
+								<p><%=orderItemResult[i].product_title%></p>						
+							<%}%>
+						
+						
+						</div>
 					</li>
 					<li class="clearfix hide">
 						<div class="label">配送时间：</div>

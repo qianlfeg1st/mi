@@ -14,6 +14,11 @@ class BuyController extends Controller {
     let cartList = this.service.cookies.get('cartList');
 
 
+    //签名防止重复提交订单
+    var orderSign=await this.service.tools.md5(await this.service.tools.getRandomNum());
+    this.ctx.session.orderSign=orderSign;
+      
+
     if (cartList && cartList.length > 0) {
 
       for (let i = 0; i < cartList.length; i++) {
@@ -36,6 +41,7 @@ class BuyController extends Controller {
         orderList,
         allPrice,
         addressList,
+        orderSign:orderSign
       });
 
     } else {
@@ -52,8 +58,6 @@ class BuyController extends Controller {
 
   async doOrder(){
 
-
-
     /*
       1、获取收货地址信息
 
@@ -61,16 +65,21 @@ class BuyController extends Controller {
 
       3、把这些信息  放在订单表  
             
-      4、删除购物车里面的数据
-    
+      4、删除购物车里面的数据    
     */
+
+    /*防止提交重复订单*/
+    var orderSign=this.ctx.request.body.orderSign;
+    if(orderSign!=this.ctx.session.orderSign){
+      return false;
+    }
+    this.ctx.session.orderSign=null;
 
 
      const uid = this.ctx.service.cookies.get('userinfo')._id;
      let addressResult = await this.ctx.model.Address.find({ "uid":uid,"default_address":1 });     
      let cartList = this.service.cookies.get('cartList');
      if(addressResult && addressResult.length>0 && cartList && cartList.length>0){
-
 
         var all_price=0;
 
@@ -132,13 +141,13 @@ class BuyController extends Controller {
 
 
         }else{
-          this.ctx.redirect('/checkout');
+          this.ctx.redirect('/buy/checkout');
         }
 
     }else{
 
 
-      this.ctx.redirect('/checkout');
+      this.ctx.redirect('/buy/checkout');
     }
       
 
@@ -156,8 +165,31 @@ class BuyController extends Controller {
   // 确认订单  支付
   async confirm() {
 
-    console.log('zhix ');
-    await this.ctx.render('default/confirm.html');    
+    
+    var id=this.ctx.request.query.id;
+
+
+    var orderResult=await this.ctx.model.Order.find({"_id":id});
+
+    if(orderResult && orderResult.length>0){
+
+
+      //获取商品
+
+      var orderItemResult=await this.ctx.model.OrderItem.find({"order_id":id});      
+
+
+       await this.ctx.render('default/confirm.html',{
+        orderResult:orderResult[0],
+        orderItemResult:orderItemResult
+
+       });    
+
+    }else{
+      //错误
+      this.ctx.redirect('/');
+    }
+
   }
 }
 
