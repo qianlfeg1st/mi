@@ -7,12 +7,11 @@ class BuyController extends Controller {
   // 去结算
   async checkout() {
 
-
     // 获取购物车选中的商品
 
-    const orderList = [];
+    let orderList = [];
     let allPrice = 0;
-    const cartList = this.service.cookies.get('cartList');
+    let cartList = this.service.cookies.get('cartList');
 
 
     if (cartList && cartList.length > 0) {
@@ -46,9 +45,119 @@ class BuyController extends Controller {
 
 
   }
+
+
+  //提交订单
+
+
+  async doOrder(){
+
+
+
+    /*
+      1、获取收货地址信息
+
+      2、需要获取购买商品的信息
+
+      3、把这些信息  放在订单表  
+            
+      4、删除购物车里面的数据
+    
+    */
+
+
+     const uid = this.ctx.service.cookies.get('userinfo')._id;
+     let addressResult = await this.ctx.model.Address.find({ "uid":uid,"default_address":1 });     
+     let cartList = this.service.cookies.get('cartList');
+     if(addressResult && addressResult.length>0 && cartList && cartList.length>0){
+
+
+        var all_price=0;
+
+        let orderList=cartList.filter((value)=>{
+            if(value.checked){
+              
+              all_price+=value.price*value.num;
+              return value;
+            }
+        })
+
+        //执行提交订单的操作
+
+        let order_id=await this.service.tools.getOrderId();  
+        let name=addressResult[0].name;
+        let phone=addressResult[0].phone;
+        let address=addressResult[0].address;
+        let zipcode =addressResult[0].zipcode;
+        let pay_status=0;
+        let pay_type='';
+        let order_status=0;
+        let orderModel=new this.ctx.model.Order({order_id,name,phone,address,zipcode,pay_status,pay_type,order_status,all_price});
+        let orderResult=await orderModel.save();
+
+        if(orderResult && orderResult._id){
+
+
+            //增加商品信息
+
+            for(let i=0;i<orderList.length;i++){           
+
+                let json={
+                  "order_id":orderResult._id,   //订单id
+                  "product_title":orderList[i].title,
+                  "product_id":orderList[i]._id,
+                  "product_img":orderList[i].goods_img,
+                  "product_price":orderList[i].price,                
+                  "product_num":orderList[i].num  
+                }           
+
+                let orderItemModel=new this.ctx.model.OrderItem(json);
+                await orderItemModel.save();
+
+            }
+
+
+            //删除购物车中已经购买的商品             
+          
+            var unCheckedCartList=cartList.filter((value)=>{
+                if(!value.checked){
+                  return value;
+                }
+            })
+
+            this.service.cookies.set('cartList', unCheckedCartList);            
+            
+
+           this.ctx.redirect('/buy/confirm?id='+orderResult._id);
+
+
+        }else{
+          this.ctx.redirect('/checkout');
+        }
+
+    }else{
+
+
+      this.ctx.redirect('/checkout');
+    }
+      
+
+
+
+
+
+
+
+
+      console.log('提交订单');
+
+  }
+
   // 确认订单  支付
   async confirm() {
-    this.ctx.body = 'confirm';
+
+    console.log('zhix ');
+    await this.ctx.render('default/confirm.html');    
   }
 }
 
