@@ -95,6 +95,6 @@ module.exports = app => {
 
   router.get('/user/changeDefaultAddress', initMiddleware, userauthMiddleware, controller.default.address.changeDefaultAddress);
 
-  router.post('/user/editOneAddressList', initMiddleware, userauthMiddleware, controller.default.address.editOneAddressList);
+  router.post('/user/editAddress', initMiddleware, userauthMiddleware, controller.default.address.editAddress);
 
 };
