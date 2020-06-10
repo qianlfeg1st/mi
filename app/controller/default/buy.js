@@ -180,14 +180,67 @@ class BuyController extends Controller {
 
 
        await this.ctx.render('default/confirm.html',{
-        orderResult:orderResult[0],
-        orderItemResult:orderItemResult
+          orderResult:orderResult[0],
+          orderItemResult:orderItemResult,
+          id:id
 
        });    
 
     }else{
       //错误
       this.ctx.redirect('/');
+    }
+
+  }
+
+
+  //执行多次
+  async  getOrderPayStatus(){
+
+    /*
+
+     1、获取订单号
+    
+     2、查询当前订单的支付状态
+
+     3、如果支付 返回成功   如果没有支付返回失败信息
+
+
+    */
+
+    var id=this.ctx.request.query.id;
+
+    if(id){
+       try {
+
+          var orderReuslt=await this.ctx.model.Order.find({"_id":id});
+          if(orderReuslt && orderReuslt[0].pay_status==1 && orderReuslt[0].order_status==1 ){
+              this.ctx.body={
+                success:true,
+                message:'已支付'
+              }
+
+          }else{
+            this.ctx.body={
+              success:false,
+              message:'未支付'
+            }
+          }
+         
+       } catch (error) {
+         
+          this.ctx.body={
+            success:false,
+            message:'未支付'
+          }
+       }
+
+    }else{
+      this.ctx.body={
+        success:false,
+        message:'未支付'
+      }
+
     }
 
   }

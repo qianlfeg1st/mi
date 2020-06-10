@@ -94,6 +94,9 @@ module.exports = app => {
   router.post('/buy/doOrder', initMiddleware, userauthMiddleware, controller.default.buy.doOrder);
 
 
+  //检测订单是否支付
+  router.get('/buy/getOrderPayStatus', initMiddleware, userauthMiddleware, controller.default.buy.getOrderPayStatus);
+
 
 
 
@@ -129,8 +132,9 @@ router.post('/weixinpay/weixinpayNotify', initMiddleware,xmlparseMiddleware, con
   router.get('/user/changeDefaultAddress', initMiddleware, userauthMiddleware, controller.default.address.changeDefaultAddress);
 
   router.post('/user/editAddress', initMiddleware, userauthMiddleware, controller.default.address.editAddress);
-
-
+  
+  router.get(' /user/order', initMiddleware, userauthMiddleware, controller.default.user.order);
+ 
   
 
 };

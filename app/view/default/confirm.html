@@ -187,6 +187,21 @@
 		})
 
 
+
+		setInterval(function(){
+
+			$.get('/buy/getOrderPayStatus?id=<%=id%>',function(response){
+
+
+					console.log(response);
+					if(response.success){
+						location.href='/user/order'
+					}
+
+			})
+
+		},5000);
+
 		
 
 	})
