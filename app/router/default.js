@@ -10,6 +10,9 @@ module.exports = app => {
 
   const userauthMiddleware = app.middleware.userauth({}, app);
 
+  const xmlparseMiddleware = app.middleware.xmlparse();
+
+
   router.get('/', initMiddleware, controller.default.index.index);
 
   router.get('/plist', initMiddleware, controller.default.product.list);
@@ -89,6 +92,18 @@ module.exports = app => {
   
   //提交订单
   router.post('/buy/doOrder', initMiddleware, userauthMiddleware, controller.default.buy.doOrder);
+
+
+
+ //支付
+  router.get('/alipay/pay', initMiddleware, controller.default.alipay.pay);
+
+//支付成功回调
+  router.get('/alipay/alipayReturn', initMiddleware, controller.default.alipay.alipayReturn);
+
+//支付成功异步通知   注意关闭csrf验证
+
+ router.post('/alipay/alipayNotify', initMiddleware,xmlparseMiddleware, controller.default.alipay.alipayNotify);
 
 
 

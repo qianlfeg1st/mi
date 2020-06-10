@@ -4,6 +4,7 @@
   "description": "",
   "private": true,
   "dependencies": {
+    "alipay-mobile": "^3.0.9",
     "egg": "^2.2.1",
     "egg-mongoose": "^3.2.0",
     "egg-redis": "^2.4.0",
@@ -11,6 +12,7 @@
     "egg-view-ejs": "^2.0.0",
     "egg-view-nunjucks": "^2.2.0",
     "jimp": "^0.12.1",
+    "koa-xml-body": "^2.1.0",
     "md5": "^2.2.1",
     "mz-modules": "^2.1.0",
     "showdown": "^1.9.1",
