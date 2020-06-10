@@ -95,6 +95,8 @@ module.exports = app => {
 
 
 
+
+
  //支付
   router.get('/alipay/pay', initMiddleware, controller.default.alipay.pay);
 
@@ -107,6 +109,12 @@ module.exports = app => {
 
 
 
+// 微信支付
+router.get('/weixinpay/pay', initMiddleware, controller.default.weixinpay.pay);
+
+
+//异步通知   注意关闭csrf验证
+router.post('/weixinpay/weixinpayNotify', initMiddleware,xmlparseMiddleware, controller.default.weixinpay.weixinpayNotify);
 
 
 

@@ -73,12 +73,12 @@ module.exports = appInfo => {
     csrf: {
       // 判断是否需要 ignore 的方法，请求上下文 context 作为第一个参数
       ignore: ctx => {
-        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/pass/doLogin' || ctx.request.url == '/user/addAddress' ||  ctx.request.url == '/user/editAddress' || ctx.request.url == '/alipay/alipayNotify') {
+        if (ctx.request.url == '/admin/goods/goodsUploadImage' || ctx.request.url == '/admin/goods/goodsUploadPhoto' || ctx.request.url == '/pass/doLogin' || ctx.request.url == '/user/addAddress' ||  ctx.request.url == '/user/editAddress' || ctx.request.url == '/alipay/alipayNotify' || ctx.request.url == '/weixinpay/weixinpayNotify') {
           return true;
         }
         return false;
-      },
-    },
+      }
+    }
   };
 
 
@@ -109,17 +109,31 @@ module.exports = appInfo => {
     notify_url:'http://127.0.0.1:7001/alipay/alipayNotify' //支付成功异步通知地址
   }
 
-  //配置默认启动的端口
-  /*
-  config.cluster = {
-      listen: {
-        path: '',
-        port: 8000,
-        hostname: '0.0.0.0',
-      }
-  };
+  //微信支付的配置
+  exports.weixinPayConfig={
+      mch_id: '1502539541',
+      wxappid: "wx7bf3787c783116e4",                       
+      wxpaykey: 'zhongyuantengitying6666666666666'
+  }      
   
-  */
+  exports.weixinpayBasicParams={   
+
+    //注意回调地址必须在  微信商户平台配置
+    notify_url:"http://video.apiying.com/weixinpay/weixinpayNotify"
+  }
+  
+
+  //配置默认启动的端口
+  
+  // config.cluster = {
+  //     listen: {
+  //       path: '',
+  //       port: 8000,
+  //       hostname: '0.0.0.0',
+  //     }
+  // };
+  
+
 
   return config;
 };
