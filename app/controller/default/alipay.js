@@ -27,6 +27,8 @@ class AlipayController extends Controller {
 
         this.ctx.body='支付成功';
 
+        // 跳转到订单页面
+
         //接收异步通知        
     }
 

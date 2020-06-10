@@ -23,16 +23,6 @@ module.exports = app => {
   router.get('/getImagelist', initMiddleware, controller.default.product.getImagelist);
 
 
-  // 用户中心
-
-  // router.get('/login', controller.default.user.login);
-
-  // router.get('/register', controller.default.user.register);
-
-
-  router.get('/user', controller.default.user.welcome);
-
-  router.get('/user/order', controller.default.user.order);
 
 
   // 购物车
@@ -133,7 +123,11 @@ router.post('/weixinpay/weixinpayNotify', initMiddleware,xmlparseMiddleware, con
 
   router.post('/user/editAddress', initMiddleware, userauthMiddleware, controller.default.address.editAddress);
   
-  router.get(' /user/order', initMiddleware, userauthMiddleware, controller.default.user.order);
+
+  // 用户中心
+
+
+  router.get('/user/order', initMiddleware, userauthMiddleware, controller.default.user.order);
  
   
 
