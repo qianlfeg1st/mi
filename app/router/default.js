@@ -126,8 +126,15 @@ router.post('/weixinpay/weixinpayNotify', initMiddleware,xmlparseMiddleware, con
 
   // 用户中心
 
+  router.get('/user/welcome', initMiddleware, userauthMiddleware, controller.default.user.welcome);
 
   router.get('/user/order', initMiddleware, userauthMiddleware, controller.default.user.order);
+  
+  router.get('/user/orderinfo', initMiddleware, userauthMiddleware, controller.default.user.orderinfo);
+
+
+
+
  
   
 

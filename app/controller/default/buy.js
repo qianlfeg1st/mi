@@ -101,7 +101,9 @@ class BuyController extends Controller {
         let pay_status=0;
         let pay_type='';
         let order_status=0;
-        let orderModel=new this.ctx.model.Order({order_id,name,phone,address,zipcode,pay_status,pay_type,order_status,all_price});
+
+       
+        let orderModel=new this.ctx.model.Order({order_id,uid,name,phone,address,zipcode,pay_status,pay_type,order_status,all_price});
         let orderResult=await orderModel.save();
 
         if(orderResult && orderResult._id){
