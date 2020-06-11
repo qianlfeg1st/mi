@@ -11,11 +11,62 @@ class UserController extends Controller {
   async order() {    
     const uid = this.ctx.service.cookies.get('userinfo')._id;
     const page = this.ctx.request.query.page || 1;
-    var json={"uid":uid};   //查询当前用户下面的所有订单
-    const pageSize = 2;
+    var order_status=this.ctx.request.query.order_status || -1;
+    var keywords=this.ctx.request.query.keywords;
+
+
+    
+
+    var json={"uid":this.app.mongoose.Types.ObjectId(uid)};   //查询当前用户下面的所有订单
+    
+    //筛选
+    if(order_status!=-1){        
+        json=Object.assign(json,{"order_status":parseInt(order_status)});
+    }
+
+    //搜索
+
+    if(keywords){
+
+        var orderItemJson=Object.assign({"uid":this.app.mongoose.Types.ObjectId(uid)},{"product_title":{$regex:new RegExp(keywords)}});
+
+        var orderItemResult=await this.ctx.model.OrderItem.find(orderItemJson);
+       
+        if(orderItemResult.length>0){
+
+            var tempArr=[];
+            orderItemResult.forEach(value => {
+              tempArr.push({
+                _id: value.order_id
+              });
+            });
+
+            
+            json=Object.assign(json,{
+              $or:tempArr
+            })
+            /*            
+             { uid: 5c10c2dfd702ac47bc58ab45,
+              '$or':
+              [ { _id: 5c41955b10f6400bb0c850ab },
+                { _id: 5c42a48be6389d22a4396833 } ] }
+
+            */
+
+        }else{
+          json=Object.assign(json,{
+            $or:[{1:-1}]
+          })
+        }
+
+    }
+
+
+
+   
+    const pageSize = 5;
     // 总数量
     const totalNum = await this.ctx.model.Order.find(json).countDocuments();
-
    
     //聚合管道要注意顺序
 
@@ -32,7 +83,7 @@ class UserController extends Controller {
         $sort: {"add_time":-1}
       },
       {
-        $match:{"uid":this.app.mongoose.Types.ObjectId(uid)}    //条件
+        $match:json    //条件
       },
       {
         $skip: (page - 1) * pageSize,
@@ -46,6 +97,7 @@ class UserController extends Controller {
       list: result,
       totalPages: Math.ceil(totalNum / pageSize),
       page,
+      order_status:order_status
     });
 
 

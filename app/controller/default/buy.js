@@ -114,6 +114,8 @@ class BuyController extends Controller {
             for(let i=0;i<orderList.length;i++){           
 
                 let json={
+
+                  "uid":uid,
                   "order_id":orderResult._id,   //订单id
                   "product_title":orderList[i].title,
                   "product_id":orderList[i]._id,
